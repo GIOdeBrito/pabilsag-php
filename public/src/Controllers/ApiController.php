@@ -1,0 +1,51 @@
+<?php
+
+use GioPHP\MVC\Controller;
+use GioPHP\Attributes\Route;
+
+class ApiController extends Controller
+{
+	#[Route(
+		method: 'POST',
+		path: '/public/api/v1/schema',
+		description: 'Schema JSON test page.',
+		schema: [ 'id' => 'json:int', 'name' => 'json:string' ]
+	)]
+	public function schema ($req, $res): void
+	{
+		var_dump($req->body);
+		$res->end(200);
+	}
+
+	#[Route(
+		method: 'POST',
+		path: '/public/api/v1/fileschema',
+		description: 'Schema file upload endpoint.',
+		schema: [ 'annex' => 'file:jpg|jpeg|png[]' ]
+	)]
+	public function schemaFile ($req, $res): void
+	{
+		$files = $req->files->annex;
+
+		if(!is_array($files))
+		{
+			$res->html(200, "
+				<h1>Not an array!</h1>
+			");
+		}
+
+		foreach($files as $item)
+		{
+			?>
+			<p>Name: <?= $item->name() ?></p>
+			<p>Extension: <?= $item->extension() ?></p>
+			<p>Size: <?= $item->inKiloBytes() ?>KB</p>
+			<br>
+			<?php
+		}
+
+		$res->end(200);
+	}
+}
+
+?>

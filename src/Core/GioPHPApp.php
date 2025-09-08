@@ -2,24 +2,24 @@
 
 namespace GioPHP\Core;
 
-ini_set('display_errors', '0');
-error_reporting(E_ALL);
+define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
+define("GIOPHP_IS_DEBUG", false);
 
-require_once __DIR__.'/../Error/ErrorHandling.php';
 require_once __DIR__.'/../Helpers/DateTime.php';
 require_once __DIR__.'/../Helpers/RouteAttributes.php';
 require_once __DIR__.'/../Helpers/Types.php';
 
 use GioPHP\Routing\Router;
 use GioPHP\Services\{Loader, Logger, ComponentRegistry};
+use GioPHP\Error\ErrorHandler;
 use GioPHP\Database\Db;
 
-use function GioPHP\Error\{ErrorHandler, ShutdownHandler};
-
-ErrorHandler();
-ShutdownHandler();
-
-define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
+if(!constant("GIOPHP_IS_DEBUG"))
+{
+	ini_set('display_errors', '0');
+	error_reporting(E_ALL);
+	new ErrorHandler();
+}
 
 class GioPHPApp
 {

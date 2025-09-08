@@ -4,17 +4,12 @@ namespace GioPHP\Http;
 
 use GioPHP\Enums\{ResponseTypes, ContentType};
 use GioPHP\Services\{Loader, Logger, ComponentRegistry};
-use GioPHP\Http\ResponsePayload;
 use GioPHP\View\ViewRenderer;
+use GioPHP\Interface\ResponseInterface;
+use GioPHP\Http\Response\{FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse};
 
 class Response
 {
-	private string $view;
-	private string $layout;
-	private array $viewparams = [];
-
-	private ResponsePayload $payload;
-
 	private Loader $loader;
 	private Logger $logger;
 	private ComponentRegistry $components;
@@ -24,55 +19,31 @@ class Response
 		$this->loader = $loader;
 		$this->logger = $logger;
 		$this->components = $components;
-
-		$this->payload = new ResponsePayload();
 	}
 
-	private function setPayload (mixed $body, ResponseTypes $response, string $content, int $status = 200)
+	public function render (int $status, string $view, string $layout = '_layout', array $params = []): void
 	{
-		$this->payload->body = $body;
-		$this->payload->contentType = $content;
-		$this->payload->responseType = $response;
-		$this->payload->status = $status;
+		$this->send(new RenderResponse(status: $status, view: $view, layout: $layout, viewData: $params));
 	}
 
-	public function render (string $view, string $layout, array $params = []): void
+	public function html (int $status, string $html): void
 	{
-		$this->view = $view;
-		$this->layout = $layout;
-		$this->viewparams = $params;
-
-		$this->setPayload('', ResponseTypes::VIEW, ContentType::Html);
-		$this->send();
+		$this->send(new HtmlResponse(status: $status, html: $html));
 	}
 
-	public function setStatus (int $code): void
+	public function json (int $status, array|object $data): void
 	{
-		$this->payload->status = $code;
+		$this->send(new JsonResponse(status: $status, body: $data));
 	}
 
-	public function html (string $body): void
+	public function plain (int $status, string $text): void
 	{
-		$this->setPayload($body, ResponseTypes::HTML, ContentType::Html);
-		$this->send();
+		$this->send(new PlainResponse(status: $status, text: $text));
 	}
 
-	public function json (array|object $data): void
+	public function file (int $status, string $path, string $type = ContentType::FileStream, string $filename = ''): void
 	{
-		$this->setPayload($data, ResponseTypes::JSON, ContentType::Json);
-		$this->send();
-	}
-
-	public function plain (string $body): void
-	{
-		$this->setPayload($body, ResponseTypes::PLAINTEXT, ContentType::PlainText);
-		$this->send();
-	}
-
-	public function file (string $path, string $type = ContentType::FileStream): void
-	{
-		$this->setPayload($path, ResponseTypes::FILE, $type);
-		$this->send();
+		$this->send(new FileResponse(status: $status, filepath: $path, contenttype: $type, filename: $filename));
 	}
 
 	public function end (int $status = 200): void
@@ -88,32 +59,32 @@ class Response
 		die();
 	}
 
-	private function send (): void
+	private function send ($response): void
 	{
-		http_response_code(intval($this->payload->status));
-		header('Content-Type: '.$this->payload->contentType);
+		http_response_code(intval($response->getStatus()));
+		header('Content-Type: '.$response->getContentType());
 
 		try
 		{
-			switch($this->payload->responseType)
+			switch($response->getResponseType())
 			{
 				case ResponseTypes::VIEW:
-					$this->sendView();
+					$this->sendView($response->getView(), $response->getLayout(), $response->getViewData());
 					break;
 				case ResponseTypes::JSON:
-					$this->sendJson();
+					$this->sendJson($response->getBody());
 					break;
 				case ResponseTypes::HTML:
-					$this->sendHtml();
+					$this->sendHtml($response->getHTML());
 					break;
 				case ResponseTypes::FILE:
-					$this->sendFile();
+					$this->sendFile($response->getFilePath(), $response->getFilename());
 					break;
 				case ResponseTypes::PLAINTEXT:
-					$this->sendPlain();
+					$this->sendPlain($response->getText());
 					break;
 				default:
-					throw new \LogicException("Unknown response '{$this->payload->responseType}'.");
+					throw new \LogicException("Unknown response '{$response->getResponseType()}'.");
 			}
 		}
 		catch(\Exception $ex)
@@ -126,7 +97,7 @@ class Response
 		die();
 	}
 
-	private function sendView (): void
+	private function sendView (string $view, string $layout, array|object $params): void
 	{
 		$viewPath = $this->loader->getViewDirectory();
 
@@ -136,7 +107,7 @@ class Response
 		}
 
 		$viewrenderer = new ViewRenderer($this->components);
-		$viewFilePath = "{$viewPath}/{$this->view}.php";
+		$viewFilePath = "{$viewPath}/{$view}.php";
 
 		if(!file_exists($viewFilePath))
 		{
@@ -157,30 +128,35 @@ class Response
 		$body = $viewrenderer->getHtml();
 
 		// Extract params as proper variables
-		extract($this->viewparams);
+		extract($params);
 
 		// Load layout
-		include "{$this->loader?->getLayoutDirectory()}/{$this->layout}.php";
+		include "{$this->loader?->getLayoutDirectory()}/{$layout}.php";
 	}
 
-	private function sendJson (): void
+	private function sendJson (array|object $body): void
 	{
-		echo json_encode($this->payload->body ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+		echo json_encode($body ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 	}
 
-	private function sendHtml (): void
+	private function sendHtml (string $html): void
 	{
-		echo $this->payload->body;
+		echo $html ?? '';
 	}
 
-	private function sendFile (): void
+	private function sendFile (string $path, string $filename): void
 	{
-		readfile($this->payload->body);
+		if(!empty($filename))
+		{
+			header("Content-Disposition: attachment; filename=\"{$filename}\"");
+		}
+
+		readfile($path);
 	}
 
-	private function sendPlain (): void
+	private function sendPlain (string $text): void
 	{
-		echo $this->payload->body ?? "";
+		echo $text ?? "";
 	}
 }
 

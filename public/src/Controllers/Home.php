@@ -18,8 +18,7 @@ class Home extends Controller
 			'title' => 'Home'
 		];
 
-		$res->setStatus(200);
-		$res->render('Home', '_layout', $viewData);
+		$res->render(200, 'Home', '_layout', $viewData);
 	}
 
 	#[Route(
@@ -41,8 +40,7 @@ class Home extends Controller
 		var_dump($res);
 		die();
 
-		$res->setStatus(200);
-		$res->render('Home', '_layout', $viewData);
+		$res->render(200, 'Home', '_layout', $viewData);
 	}
 
 	#[Route(
@@ -52,20 +50,7 @@ class Home extends Controller
 	)]
 	public function indexUpload ($req, $res): void
 	{
-		$res->setStatus(200);
-		$res->render('FileUpload', '_layout');
-	}
-
-	#[Route(
-		method: 'POST',
-		path: '/public/schema',
-		description: 'Schema JSON test page.',
-		schema: [ 'id' => 'json:int', 'name' => 'json:string' ]
-	)]
-	public function schema ($req, $res): void
-	{
-		var_dump($req->body);
-		$res->end(200);
+		$res->render(200, 'FileUpload', '_layout', [ 'title' => 'Upload' ]);
 	}
 
 	#[Route(
@@ -76,40 +61,10 @@ class Home extends Controller
 	)]
 	public function schemaQuery ($req, $res): void
 	{
-		$res->html("
-			<h1>ID: {$req->query->id}</h1>
-			<h1>Name: {$req->query->name}</h1>
+		$res->html(200, "
+			<h1>ID: {$req->query?->id}</h1>
+			<h1>Name: {$req->query?->name}</h1>
 		");
-	}
-
-	#[Route(
-		method: 'POST',
-		path: '/public/fileschema',
-		description: 'Schema file upload endpoint.',
-		schema: [ 'annex' => 'file:jpg|jpeg|png[]' ]
-	)]
-	public function schemaFile ($req, $res): void
-	{
-		$files = $req->files->annex;
-
-		if(!is_array($files))
-		{
-			$res->html("
-				<h1>Not an array!</h1>
-			");
-		}
-
-		foreach($files as $item)
-		{
-			?>
-			<p>Name: <?= $item->name() ?></p>
-			<p>Extension: <?= $item->extension() ?></p>
-			<p>Size: <?= $item->inKiloBytes() ?>KB</p>
-			<br>
-			<?php
-		}
-
-		$res->end(200);
 	}
 
 	#[Route(
@@ -120,8 +75,7 @@ class Home extends Controller
 	)]
 	public function notFound ($req, $res)
 	{
-		$res->setStatus(404);
-		$res->html("<h1>Not Found</h1>");
+		$res->html(404, "<h1>Not Found</h1>");
 	}
 }
 
