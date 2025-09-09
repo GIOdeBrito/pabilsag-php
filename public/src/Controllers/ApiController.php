@@ -39,6 +39,7 @@ class ApiController extends Controller
 			?>
 			<p>Name: <?= $item->name() ?></p>
 			<p>Extension: <?= $item->extension() ?></p>
+			<p>Type: <?= $item->contentType() ?></p>
 			<p>Size: <?= $item->inKiloBytes() ?>KB</p>
 			<br>
 			<?php
