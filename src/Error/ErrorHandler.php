@@ -6,6 +6,10 @@ class ErrorHandler
 {
 	public function __construct ()
 	{
+		// Do not allow errors to be written on the HTML document
+		ini_set('display_errors', '0');
+		error_reporting(E_ALL);
+
 		$this->initErrorHandler();
 		$this->initShutdownHandler();
 	}
