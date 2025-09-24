@@ -16,9 +16,9 @@ class MiddlewarePipeline
 		$this->logger = $logger;
 	}
 
-	public function add (Middleware $mw): void
+	public function add (Middleware $middleware): void
 	{
-		array_push($this->middlewares, $mw);
+		array_push($this->middlewares, $middleware);
 	}
 
 	public function addMultiple (array $middlewares): void
@@ -35,32 +35,31 @@ class MiddlewarePipeline
 
 			$current = current($queue);
 
-		    if($current === false) {
-		        return; // no more middleware
+			if(is_null($current) OR $current === false)
+			{
+		        return;
 		    }
 
-		    next($queue); // advance pointer
+			// Advance array pointer
+		    next($queue);
 
 			$next = function() use (&$runMiddleware) {
 		        $runMiddleware();
 			};
 
-			if(gettype($current) === 'string')
+			// Instantiate if string is a class
+			if(is_string($current) AND class_exists($current))
 			{
 				// Call current middleware
 				(new $current())->handle($request, $response, $next);
 				return;
 			}
 
+			// Spawn the route
 			$current($request, $response, $next);
 		};
 
 		$runMiddleware();
-	}
-
-	private function runMiddleware ($middleware, $next): void
-	{
-		call_user_func($middleware, );
 	}
 }
 
