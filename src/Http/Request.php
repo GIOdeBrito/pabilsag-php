@@ -103,59 +103,57 @@ class Request
 		endforeach;
 	}
 
-	private function getFormParam (string $key, string $type): bool
+	private function getFormParam (string $key, string $type): void
 	{
-		if(!isset($_POST[$key]))
+		$value = NULL;
+
+		if(isset($_POST[$key]))
 		{
-			return false;
+			$value = convertToType($_POST[$key], $type);
 		}
 
-		$value = convertToType($_POST[$key], $type);
 		$this->form[$key] = $value;
-
-		return true;
 	}
 
-	private function getJsonParam (string $key, string $type): bool
+	private function getJsonParam (string $key, string $type): void
 	{
 		$json = json_decode(file_get_contents('php://input') ?? '', true);
+		$value = NULL;
 
-		if(!isset($json[$key]))
+		if(isset($json[$key]))
 		{
-			return false;
+			$value = convertToType($json[$key], $type);
 		}
 
-		$value = convertToType($json[$key], $type);
 		$this->body[$key] = $value;
-
-		return true;
 	}
 
-	private function getQueryParam (string $key, string $type): bool
+	private function getQueryParam (string $key, string $type): void
 	{
-		if(!isset($_GET[$key]))
+		$value = NULL;
+
+		if(isset($_GET[$key]))
 		{
-			return false;
+			$value = convertToType($_GET[$key], $type);
 		}
 
-		$value = convertToType($_GET[$key], $type);
 		$this->query[$key] = $value;
-
-		return true;
 	}
 
-	private function getFileParam (string $key, string $type): bool
+	private function getFileParam (string $key, string $type): void
 	{
+		$this->files[$key] = NULL;
+
 		if(!isset($_FILES[$key]))
 		{
-			return false;
+			return;
 		}
 
 		$filedata = $_FILES[$key];
 
 		if(!isset($filedata['name']))
 		{
-			return false;
+			return;
 		}
 
 		// Checks if route expects multiple files
@@ -166,7 +164,7 @@ class Request
 
 		if($isMultipleFileType !== $isMultiForm)
 		{
-			return false;
+			return;
 		}
 
 		// Get the file types that are allowed
@@ -190,14 +188,12 @@ class Request
 				$size
 			);
 
-			if(!in_array($fileItem->exntension(), $allowedTypes))
+			if(!in_array($fileItem->extension(), $allowedTypes))
 			{
-				return false;
+				return;
 			}
 
 			$this->files[$key] = $fileItem;
-
-			return true;
 		}
 
 		for($i = 0; $i < count($filedata['name']); $i++):
@@ -226,11 +222,9 @@ class Request
 			$this->files[$key][$i] = $fileItem;
 
 		endfor;
-
-		return true;
 	}
 
-	private function getSingleFileParam (): ?FileData
+	private function getSingleFileParam (): void
 	{
 		$name = $filedata['name'];
 		$fullpath = $filedata['full_path'];
@@ -247,8 +241,6 @@ class Request
 			$error,
 			$size
 		);
-
-		return true;
 	}
 }
 

@@ -4,7 +4,7 @@ namespace GioPHP\Helpers;
 
 use function GioPHP\Helpers\toDateTime;
 
-function convertToType (mixed $value, string $type = 'any'): mixed
+function convertToType (mixed $value, string $type = 'any', bool $isArray = false): mixed
 {
 	switch($type)
 	{
