@@ -16,7 +16,7 @@ class MiddlewareController extends Controller
 	)]
 	public function index ($req, $res): void
 	{
-		$res->plain(200, "Verify the log output.");
+		$res->status(200)->plain("Verify the log output.");
 	}
 }
 

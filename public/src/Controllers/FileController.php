@@ -21,7 +21,7 @@ class FileController extends Controller
 			$res->redirect('/public/404');
 		}
 
-		$res->file(200, $path, filename: 'Hipopotamo.jpg');
+		$res->status(200)->file($path, filename: 'Hipopotamo.jpg');
 	}
 
 	#[Route(
@@ -38,7 +38,7 @@ class FileController extends Controller
 			$res->redirect('/public/404');
 		}
 
-		$res->file(200, $path, ContentType::ImageJpg);
+		$res->status(200)->file($path, ContentType::ImageJpg);
 	}
 
 	#[Route(
@@ -57,7 +57,7 @@ class FileController extends Controller
 
 		$content = base64_encode(file_get_contents($path));
 
-		$res->plain(200, $content);
+		$res->status(200)->plain($content);
 	}
 }
 

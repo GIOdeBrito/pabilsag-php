@@ -29,7 +29,7 @@ class ApiController extends Controller
 
 		if(!is_array($files))
 		{
-			$res->html(200, "
+			$res->status(200)->html("
 				<h1>Not an array!</h1>
 			");
 		}

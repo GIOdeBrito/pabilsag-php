@@ -18,7 +18,7 @@ class Home extends Controller
 			'title' => 'Home'
 		];
 
-		$res->render(200, 'Home', '_layout', $viewData);
+		$res->status(200)->render('Home', '_layout', $viewData);
 	}
 
 	#[Route(
@@ -40,7 +40,7 @@ class Home extends Controller
 		var_dump($res);
 		die();
 
-		$res->render(200, 'Home', '_layout', $viewData);
+		$res->status(200)->render('Home', '_layout', $viewData);
 	}
 
 	#[Route(
@@ -50,7 +50,7 @@ class Home extends Controller
 	)]
 	public function indexUpload ($req, $res): void
 	{
-		$res->render(200, 'FileUpload', '_layout', [ 'title' => 'Upload' ]);
+		$res->status(200)->render('FileUpload', '_layout', [ 'title' => 'Upload' ]);
 	}
 
 	#[Route(
@@ -61,7 +61,7 @@ class Home extends Controller
 	)]
 	public function schemaQuery ($req, $res): void
 	{
-		$res->html(200, "
+		$res->status(200)->html("
 			<h1>ID: {$req->query?->id}</h1>
 			<h1>Name: {$req->query?->name}</h1>
 		");
@@ -75,7 +75,7 @@ class Home extends Controller
 	)]
 	public function notFound ($req, $res)
 	{
-		$res->html(404, "<h1>Not Found</h1>");
+		$res->status(404)->html("<h1>Not Found</h1>");
 	}
 }
 

@@ -22,7 +22,7 @@ class WebController extends Controller
 		//echo "aaaaa";
 		var_dump($response);
 
-		$res->end();
+		$res->end(200);
 	}
 }
 

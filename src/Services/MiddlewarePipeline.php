@@ -23,7 +23,10 @@ class MiddlewarePipeline
 
 	public function addMultiple (array $middlewares): void
 	{
-		$this->middlewares = array_merge($this->middlewares, $middlewares);
+		// Check if the middlewares are properly of instance
+		$collection = array_filter($middlewares, fn($item) => $this->isMiddlewareInstance($item));
+
+		$this->middlewares = array_merge($this->middlewares, $collection);
 	}
 
 	public function handle ($request, $response, $route): void
@@ -48,7 +51,7 @@ class MiddlewarePipeline
 			};
 
 			// Instantiate if string is a class
-			if(is_string($current) AND class_exists($current))
+			if($this->isMiddlewareInstance($current))
 			{
 				// Call current middleware
 				(new $current())->handle($request, $response, $next);
@@ -60,6 +63,21 @@ class MiddlewarePipeline
 		};
 
 		$runMiddleware();
+	}
+
+	private function isMiddlewareInstance (string|object $target): bool
+	{
+		if(is_string($target) AND is_a($target, 'GioPHP\Interface\Middleware', true))
+		{
+			return true;
+		}
+
+		if($target instanceof Middleware)
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
 

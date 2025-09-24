@@ -10,6 +10,7 @@ use GioPHP\Http\Response\{FileResponse, HtmlResponse, JsonResponse, PlainRespons
 
 class Response
 {
+	private int $code = 200;
 	private Loader $loader;
 	private Logger $logger;
 	private ComponentRegistry $components;
@@ -21,29 +22,35 @@ class Response
 		$this->components = $components;
 	}
 
-	public function render (int $status, string $view, string $layout = '_layout', array $params = []): void
+	public function status (int $code): Response
 	{
-		$this->send(new RenderResponse(status: $status, view: $view, layout: $layout, viewData: $params));
+		$this->code = $code ?? 200;
+		return $this;
 	}
 
-	public function html (int $status, string $html): void
+	public function render (string $view, string $layout = '_layout', array $params = []): void
 	{
-		$this->send(new HtmlResponse(status: $status, html: $html));
+		$this->send(new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params));
 	}
 
-	public function json (int $status, array|object $data): void
+	public function html (string $html): void
 	{
-		$this->send(new JsonResponse(status: $status, body: $data));
+		$this->send(new HtmlResponse(status: $this->code, html: $html));
 	}
 
-	public function plain (int $status, string $text): void
+	public function json (array|object $data): void
 	{
-		$this->send(new PlainResponse(status: $status, text: $text));
+		$this->send(new JsonResponse(status: $this->code, body: $data));
 	}
 
-	public function file (int $status, string $path, string $type = ContentType::FileStream, string $filename = ''): void
+	public function plain (string $text): void
 	{
-		$this->send(new FileResponse(status: $status, filepath: $path, contenttype: $type, filename: $filename));
+		$this->send(new PlainResponse(status: $this->code, text: $text));
+	}
+
+	public function file (string $path, string $type = ContentType::FileStream, string $filename = ''): void
+	{
+		$this->send(new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename));
 	}
 
 	public function end (int $status = 200): void
@@ -146,7 +153,7 @@ class Response
 
 	private function sendFile (string $path, string $filename): void
 	{
-		if(!empty($filename))
+		if(!empty($filename ?? ''))
 		{
 			header("Content-Disposition: attachment; filename=\"{$filename}\"");
 		}
