@@ -49,7 +49,7 @@ class Response
 	public function end (int $status = 200): void
 	{
 		http_response_code($status);
-		die();
+		return;
 	}
 
 	public function redirect (string $url): void
@@ -94,7 +94,7 @@ class Response
 			echo "Internal Server Error";
 		}
 
-		die();
+		return;
 	}
 
 	private function sendView (string $view, string $layout, array|object $params): void

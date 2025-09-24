@@ -10,6 +10,8 @@ use GioPHP\Core\GioPHPApp as App;
 require 'src/Controllers/Home.php';
 require 'src/Controllers/FileController.php';
 require 'src/Controllers/ApiController.php';
+require 'src/Controllers/WebController.php';
+require 'src/Controllers/MiddlewareController.php';
 
 $app = new App();
 
@@ -19,6 +21,8 @@ $app->loader()->setConnectionString("sqlite:".__DIR__.'/database.db');
 $app->router()->addController(Home::class);
 $app->router()->addController(FileController::class);
 $app->router()->addController(ApiController::class);
+$app->router()->addController(WebController::class);
+$app->router()->addController(MiddlewareController::class);
 
 $app->components()->useComponents(true);
 $app->components()->import(include constant('ABSPATH').'/src/Components/ButtonIcon/button-icon.php');

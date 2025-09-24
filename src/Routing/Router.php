@@ -6,6 +6,7 @@ use GioPHP\Http\{Request, Response};
 use GioPHP\Services\{Loader, Logger, ComponentRegistry};
 use GioPHP\Database\Db;
 use GioPHP\Routing\ControllerRoute;
+use GioPHP\Services\MiddlewarePipeline;
 
 use function GioPHP\Helpers\getControllerSchemas;
 
@@ -20,8 +21,9 @@ class Router
 	private Logger $logger;
 	private Db $db;
 	private ComponentRegistry $components;
+	private MiddlewarePipeline $middlewarePipeline;
 
-	public function __construct (Loader $loader, Logger $logger, Db $db, ComponentRegistry $components)
+	public function __construct (Loader $loader, Logger $logger, Db $db, ComponentRegistry $components, middlewarePipeline $middlewarePipeline)
 	{
 		$this->routes = [
 			'GET' 		=> [],
@@ -34,6 +36,7 @@ class Router
 		$this->logger = $logger;
 		$this->db = $db;
 		$this->components = $components;
+		$this->middlewarePipeline = $middlewarePipeline;
 	}
 
 	public function addController (string $controller): void
@@ -52,6 +55,8 @@ class Router
 			$controllerRoute->path = $schema->path;
 			$controllerRoute->description = $schema->description;
 			$controllerRoute->schema = $schema->schema;
+			//$controllerRoute->middlewares = $schema->middlewares;
+			$this->middlewarePipeline->addMultiple($schema->middlewares);
 			$controllerRoute->controller = [$controller, $schema->functionName];
 
 			if($schema->isFallbackRoute)
@@ -88,7 +93,16 @@ class Router
 		$req->getSchema($route->schema);
 
 		$controller = $this->controllerInstantiator($route->getController());
-		$controller->{$route->getControllerMethod()}($req, $res);
+
+		// Self contained route enqueued for the pipeline
+		$routeQueued = function () use ($req, $res, $route, $controller) {
+			$controller->{$route->getControllerMethod()}($req, $res);
+		};
+
+		// Middleware pipeline prepare and execute
+		$this->middlewarePipeline->handle($req, $res, $routeQueued);
+
+		//$controller->{$route->getControllerMethod()}($req, $res);
 	}
 
 	// Checks whether a method exists in this router
@@ -122,6 +136,7 @@ class Router
 		$controllerParams = [];
 
 		foreach($constructor->getParameters() as $param):
+
 			$paramName = $param->getName();
 
 			if(!array_key_exists($paramName, $possibleParameters))
@@ -130,6 +145,7 @@ class Router
 			}
 
 			$controllerParams[$paramName] = $possibleParameters[$paramName];
+
 		endforeach;
 
 		return new $className(...$controllerParams);

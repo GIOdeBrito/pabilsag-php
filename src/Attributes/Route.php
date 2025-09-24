@@ -11,10 +11,12 @@ class Route
 		public string $method = '',
 		public string $path = '',
         public array $schema = [],
+		public array $middlewares = [],
 		public string $description = '',
 		public bool $isFallbackRoute = false,
 		public bool $isStatic = false,
 
+		// DO NOT MANUALLY SET THESE ATTRIBUTES
 		public string $functionName = '',
     ) {}
 }

@@ -9,6 +9,7 @@ class ControllerRoute
 	public array $schema;
 	public string $description;
 	public array $controller;
+	public array $middlewares;
 
 	public function getController (): string
 	{
