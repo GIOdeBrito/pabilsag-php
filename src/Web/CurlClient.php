@@ -44,7 +44,7 @@ final class CurlClient
 
 	public function setQuery (array $params): CurlClient
 	{
-		$this->queryParams = $param;
+		$this->queryParams = $params;
 		return $this;
 	}
 

@@ -18,7 +18,7 @@ final class CurlResponse
 
 	public function getAsJson (): object
 	{
-		return json_decode($this->$rawResponse);
+		return json_decode($this->rawResponse);
 	}
 
 	public function isJson (): bool
