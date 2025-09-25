@@ -3,7 +3,7 @@
 namespace GioPHP\Http\Response;
 
 use GioPHP\Enums\{ResponseTypes, ContentType};
-use GioPHP\Interface\ResponseInterface;
+use GioPHP\Interfaces\ResponseInterface;
 
 final class FileResponse implements ResponseInterface
 {

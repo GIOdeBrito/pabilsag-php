@@ -1,6 +1,6 @@
 <?php
 
-use GioPHP\Interface\Middleware;
+use GioPHP\Interfaces\Middleware;
 
 class authMiddleware implements Middleware
 {

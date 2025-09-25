@@ -1,5 +1,5 @@
-# Use the official PHP 8.1 image with Apache
-FROM php:8.1-apache
+# Use the official PHP 8.3 image with Apache
+FROM php:8.3-apache
 
 COPY ./composer.json /var/www/html/
 

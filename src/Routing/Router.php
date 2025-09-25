@@ -55,7 +55,6 @@ class Router
 			$controllerRoute->path = $schema->path;
 			$controllerRoute->description = $schema->description;
 			$controllerRoute->schema = $schema->schema;
-			//$controllerRoute->middlewares = $schema->middlewares;
 			$this->middlewarePipeline->addMultiple($schema->middlewares);
 			$controllerRoute->controller = [$controller, $schema->functionName];
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Interface;
+namespace GioPHP\Interfaces;
 
 interface Middleware
 {

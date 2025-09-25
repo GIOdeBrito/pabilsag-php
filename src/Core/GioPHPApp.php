@@ -10,8 +10,13 @@ require_once __DIR__.'/../Helpers/RouteAttributes.php';
 require_once __DIR__.'/../Helpers/Types.php';
 
 use GioPHP\Routing\Router;
-use GioPHP\Services\{Loader, Logger, ComponentRegistry, MiddlewarePipeline};
-use GioPHP\Interface\Middleware;
+use GioPHP\Services\{
+	Loader,
+	Logger,
+	ComponentRegistry,
+	MiddlewarePipeline
+};
+use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
 use GioPHP\Database\Db;
 
@@ -71,11 +76,13 @@ class GioPHPApp
 		try
 		{
 			$response = $this->router->call();
-			die();
 		}
 		catch(\ErrorException $ex)
 		{
 			$this->logger->error($ex->getMessage());
+		}
+		finally
+		{
 			die();
 		}
 	}

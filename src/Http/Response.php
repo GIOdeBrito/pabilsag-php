@@ -5,7 +5,7 @@ namespace GioPHP\Http;
 use GioPHP\Enums\{ResponseTypes, ContentType};
 use GioPHP\Services\{Loader, Logger, ComponentRegistry};
 use GioPHP\View\ViewRenderer;
-use GioPHP\Interface\ResponseInterface;
+use GioPHP\Interfaces\ResponseInterface;
 use GioPHP\Http\Response\{FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse};
 
 class Response

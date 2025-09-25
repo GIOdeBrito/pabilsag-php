@@ -2,7 +2,7 @@
 
 namespace GioPHP\Services;
 
-use GioPHP\Interface\Middleware;
+use GioPHP\Interfaces\Middleware;
 use GioPHP\Services\Logger;
 use GioPHP\Http\{Request, Response};
 
@@ -67,12 +67,12 @@ class MiddlewarePipeline
 
 	private function isMiddlewareInstance (string|object $target): bool
 	{
-		if(is_string($target) AND is_a($target, 'GioPHP\Interface\Middleware', true))
+		if(is_string($target) AND is_a($target, 'GioPHP\Interfaces\Middleware', true))
 		{
 			return true;
 		}
 
-		if($target instanceof Middleware)
+		if($target instanceof GioPHP\Interfaces\Middleware)
 		{
 			return true;
 		}

@@ -8,24 +8,42 @@ final class CurlClient
 {
 	private object $curl;
 	private string $method = '';
+	private string $baseUrl = '';
 
-	public function __construct (string $url)
+	private array $queryParams = [];
+
+	public function __construct (?string $url = NULL)
 	{
 		$curl = curl_init($url);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 		$this->curl = $curl;
+		$this->baseUrl = $url ?? '';
 	}
 
 	public function get (): CurlClient
 	{
+		$this->method = HttpMethod::GET;
 		return $this;
 	}
 
 	public function post (): CurlClient
 	{
-		curl_setopt($this->curl, CURLOPT_POST, true);
 		$this->method = HttpMethod::POST;
+		curl_setopt($this->curl, CURLOPT_POST, true);
+		return $this;
+	}
+
+	public function url (string $url): CurlClient
+	{
+		$this->baseUrl = $url;
+		curl_setopt($this->curl, CURLOPT_URL, $url);
+		return $this;
+	}
+
+	public function setQuery (array $params): CurlClient
+	{
+		$this->queryParams = $param;
 		return $this;
 	}
 
@@ -50,14 +68,25 @@ final class CurlClient
 
 	public function send (): mixed
 	{
+		if($this->method === HttpMethod::GET && !empty($this->queryParams))
+		{
+			$fullurl = $this->baseUrl.'?'.http_build_query($this->queryParams);
+			$this->url($fullurl);
+		}
+
 		$response = curl_exec($this->curl);
 
 		if(curl_errno($this->curl))
 		{
-			throw new \Exception(implode(' ', [ "GioPHP CurlClient error:", curl_error($curl) ]));
+			throw new \Exception(implode(' ', [ "GioPHP/CurlClient error:", curl_error($curl) ]));
         }
 
 		curl_close($this->curl);
+
+		if(json_validate($response))
+		{
+			return json_decode($response);
+		}
 
 		return $response;
 	}

@@ -14,15 +14,10 @@ class WebController extends Controller
 	)]
 	public function curlTest ($req, $res): void
 	{
-		//echo "aaaaaaaaaa";
-		$curl = new CurlClient('https://www.pudim.com.br/');
+		$curl = new CurlClient();
+		$response = $curl->get()->url('https://www.pudim.com.br')->send();
 
-		$response = $curl->send();
-
-		//echo "aaaaa";
-		var_dump($response);
-
-		$res->end(200);
+		$res->status(200)->html($response);
 	}
 }
 
