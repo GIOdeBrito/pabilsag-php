@@ -55,7 +55,7 @@ class Router
 			$controllerRoute->path = $schema->path;
 			$controllerRoute->description = $schema->description;
 			$controllerRoute->schema = $schema->schema;
-			$this->middlewarePipeline->addMultiple($schema->middlewares);
+			$controllerRoute->middlewares = $schema->middlewares;
 			$controllerRoute->controller = [$controller, $schema->functionName];
 
 			if($schema->isFallbackRoute)
@@ -89,14 +89,19 @@ class Router
 
 		$route = $this->routes[$requestMethod][$requestPath];
 
+		// Get the route schema i.e. the expected variables
 		$req->getSchema($route->schema);
 
+		// Instantiates the route controller
 		$controller = $this->controllerInstantiator($route->getController());
 
-		// Self contained route enqueued for the pipeline
+		// Self-contained route enqueued for the pipeline
 		$routeQueued = function () use ($req, $res, $route, $controller) {
 			$controller->{$route->getControllerMethod()}($req, $res);
 		};
+
+		// Add route-specific middlewares to the pipeline
+		$this->middlewarePipeline->addMultiple($route->middlewares);
 
 		// Middleware pipeline prepare and execute
 		$this->middlewarePipeline->handle($req, $res, $routeQueued);
@@ -128,8 +133,7 @@ class Router
 		// Available parameters for the controller's constructor
 		$possibleParameters = [
 			'database' 		=> $this->db,
-			'logger' 		=> $this->logger,
-			'components' 	=> $this->components
+			'logger' 		=> $this->logger
 		];
 
 		$controllerParams = [];

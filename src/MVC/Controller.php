@@ -9,13 +9,11 @@ abstract class Controller
 {
 	protected Database $database;
 	protected Logger $logger;
-	protected ComponentRegistry $components;
 
-	public function __construct (Database $database, Logger $logger, ComponentRegistry $components)
+	public function __construct (Database $database, Logger $logger)
 	{
 		$this->database = $database;
 		$this->logger = $logger;
-		$this->components = $components;
 	}
 
 	protected function getDatabase (): object
@@ -26,11 +24,6 @@ abstract class Controller
 	protected function getLogger (): object
 	{
 		return $this->logger;
-	}
-
-	protected function getComponents (): object
-	{
-		return $this->components;
 	}
 }
 

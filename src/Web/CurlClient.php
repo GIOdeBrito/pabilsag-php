@@ -3,6 +3,7 @@
 namespace GioPHP\Web;
 
 use GioPHP\Enums\HttpMethod;
+use GioPHP\Web\CurlResponse;
 
 final class CurlClient
 {
@@ -74,7 +75,7 @@ final class CurlClient
 			$this->url($fullurl);
 		}
 
-		$response = curl_exec($this->curl);
+		$response = new CurlResponse(curl_exec($this->curl));
 
 		if(curl_errno($this->curl))
 		{
@@ -83,12 +84,12 @@ final class CurlClient
 
 		curl_close($this->curl);
 
-		if(json_validate($response))
+		if($response->isJson())
 		{
-			return json_decode($response);
+			return $response->getAsJson();
 		}
 
-		return $response;
+		return $response->getData();
 	}
 }
 
