@@ -105,8 +105,6 @@ class Router
 
 		// Middleware pipeline prepare and execute
 		$this->middlewarePipeline->handle($req, $res, $routeQueued);
-
-		//$controller->{$route->getControllerMethod()}($req, $res);
 	}
 
 	// Checks whether a method exists in this router
@@ -150,6 +148,9 @@ class Router
 			$controllerParams[$paramName] = $possibleParameters[$paramName];
 
 		endforeach;
+
+		// TODO: If constructor names mismatch, the instance fails.
+		// Implement a way customized names can be set on the constructors
 
 		return new $className(...$controllerParams);
 	}

@@ -7,6 +7,15 @@ use GioPHP\Web\CurlClient;
 
 class WebController extends Controller
 {
+	private ?CurlClient $curl = NULL;
+
+	public function __construct ($database, $logger)
+	{
+		parent::__construct($database, $logger);
+
+		$this->curl = new CurlClient();
+	}
+
 	#[Route(
 		method: 'GET',
 		path: '/public/web/curl',
@@ -14,7 +23,7 @@ class WebController extends Controller
 	)]
 	public function curlTest ($req, $res): void
 	{
-		$curl = new CurlClient();
+		$curl = $this->curl;
 		$response = $curl->get()->url('https://www.pudim.com.br')->send();
 
 		$res->status(200)->html($response);
@@ -27,14 +36,14 @@ class WebController extends Controller
 	)]
 	public function curlQP ($req, $res): void
 	{
-		$curl = new CurlClient();
+		$curl = $this->curl;
 		$response = $curl
 			->get()
 			->url('https://postman-echo.com/get')
-			->setQuery([ 'name' => 'Gio', 'age' => '???' ])
+			->setQuery([ 'origin' => 'GioPHP\\CurlClient', 'date' => date('Y-m-d H:i:s') ])
 			->send();
 
-		$res->status(200)->html($response);
+		$res->status(200)->json($response);
 	}
 }
 
