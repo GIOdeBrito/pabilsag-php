@@ -50,7 +50,7 @@ class ErrorHandler
 
 			error_log($output);
 
-			echo file_get_contents(__DIR__.'/../Template/_internalerror.php');
+			echo file_get_contents(__DIR__.'/../Template/InternalError.php');
 			die();
 		});
 	}

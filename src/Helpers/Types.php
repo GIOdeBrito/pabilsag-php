@@ -38,4 +38,17 @@ function convertToType (mixed $value, string $type = 'any', bool $isArray = fals
 	}
 }
 
+// Sort of polyfill for PHP's 8.3 'json_validate' function
+function jsonValidate (string $data): bool
+{
+	json_decode($data);
+
+	if(json_last_error() === 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 ?>

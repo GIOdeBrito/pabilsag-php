@@ -2,6 +2,8 @@
 
 namespace GioPHP\Web;
 
+use function GioPHP\Helpers\jsonValidate;
+
 final class CurlResponse
 {
 	private mixed $rawResponse = NULL;
@@ -23,7 +25,12 @@ final class CurlResponse
 
 	public function isJson (): bool
 	{
-		return json_validate($this->rawResponse) ? true : false;
+		if(!function_exists('json_validate'))
+		{
+			return jsonValidate($this->rawResponse);
+		}
+
+		return json_validate($this->rawResponse);
 	}
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "giordano-de-brito/gio-php",
   "description": "My personal lightweight PHP framework. Made for studying reasons.",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "autoload": {
     "psr-4": {
 	  "GioPHP\\": "src/"

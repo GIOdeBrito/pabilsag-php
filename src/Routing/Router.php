@@ -7,6 +7,7 @@ use GioPHP\Services\{Loader, Logger, ComponentRegistry};
 use GioPHP\Database\Db;
 use GioPHP\Routing\ControllerRoute;
 use GioPHP\Services\MiddlewarePipeline;
+use GioPHP\Enums\HttpMethod;
 
 use function GioPHP\Helpers\getControllerSchemas;
 
@@ -26,10 +27,10 @@ class Router
 	public function __construct (Loader $loader, Logger $logger, Db $db, ComponentRegistry $components, middlewarePipeline $middlewarePipeline)
 	{
 		$this->routes = [
-			'GET' 		=> [],
-			'POST' 		=> [],
-			'PUT' 		=> [],
-			'DELETE' 	=> []
+			HttpMethod::GET 		=> [],
+			HttpMethod::POST 		=> [],
+			HttpMethod::PUT 		=> [],
+			HttpMethod::DELETE 		=> []
 		];
 
 		$this->loader = $loader;

@@ -3,7 +3,7 @@
 namespace GioPHP\Core;
 
 define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
-define("GIOPHP_IS_DEBUG", true);
+define("GIOPHP_IS_DEBUG", false);
 
 require_once __DIR__.'/../Helpers/DateTime.php';
 require_once __DIR__.'/../Helpers/RouteAttributes.php';

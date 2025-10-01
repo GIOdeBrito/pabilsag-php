@@ -10,7 +10,7 @@ if(php_sapi_name() !== 'cli')
 echo "GioPHP Installer.".PHP_EOL;
 
 // Alter the version for the one to installer will fetch
-$VERSION = "1.0.3";
+$VERSION = "1.0.5";
 
 echo "Fetching GioPHP standalone version: {$VERSION}.".PHP_EOL;
 
