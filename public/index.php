@@ -12,6 +12,7 @@ require 'src/Controllers/FileController.php';
 require 'src/Controllers/ApiController.php';
 require 'src/Controllers/WebController.php';
 require 'src/Controllers/MiddlewareController.php';
+require 'src/Controllers/DIController.php';
 
 $app = new App();
 
@@ -23,6 +24,7 @@ $app->router()->addController(FileController::class);
 $app->router()->addController(ApiController::class);
 $app->router()->addController(WebController::class);
 $app->router()->addController(MiddlewareController::class);
+$app->router()->addController(DIController::class);
 
 $app->components()->useComponents(true);
 $app->components()->import(include constant('ABSPATH').'/src/Components/ButtonIcon/button-icon.php');

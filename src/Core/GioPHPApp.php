@@ -19,7 +19,7 @@ use GioPHP\Services\{
 };
 use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
-use GioPHP\Database\Db;
+use GioPHP\Database\Db as Database;
 
 if(!constant("GIOPHP_IS_DEBUG"))
 {
@@ -29,72 +29,66 @@ if(!constant("GIOPHP_IS_DEBUG"))
 class GioPHPApp
 {
 	private ?DIContainer $container = NULL;
-	private ?Router $router = NULL;
-	private ?Loader $loader = NULL;
-	private ?Logger $logger = NULL;
-	private ?ComponentRegistry $components = NULL;
-	private ?Db $db = NULL;
-	private ?MiddlewarePipeline $middlewarePipeline = NULL;
 
 	public function __construct ()
 	{
-		$container = = new DIContainer();
-		$this->container $container;
+		$container = new DIContainer();
+		$this->container = $container;
 
-		$container->bind(Loader::class, fn() => new Logger());
-		$container->bind(Logger::class, fn() => new Loader());
+		$container->bind(Logger::class, fn() => new Logger());
 
-		$this->components = new ComponentRegistry($this->logger);
-		$this->db = new Db($this->loader, $this->logger);
-		$this->middlewarePipeline = new MiddlewarePipeline($this->logger);
+		$container->singleton(Loader::class, fn() => new Loader());
+		$container->singleton(ComponentRegistry::class, fn($container) => new ComponentRegistry(
+			$container->make(Logger::class)
+		));
 
-		$this->router = new Router($this->loader, $this->logger, $this->db, $this->components, $this->middlewarePipeline);
+		$container->singleton(Database::class, fn($container) => new Database(
+			$container->make(Loader::class),
+			$container->make(Logger::class)
+		));
+
+		$container->singleton(MiddlewarePipeline::class, fn($container) => new MiddlewarePipeline(
+			$container->make(Logger::class)
+		));
+
+		$container->singleton(Router::class, fn($container) => new Router($container));
 	}
 
 	public function logger (): object
 	{
-		return $this->logger;
+		return $this->container->make(Logger::class);;
 	}
 
 	public function router (): object
 	{
-		return $this->router;
+		return $this->container->make(Router::class);
 	}
 
 	public function loader (): object
 	{
-		return $this->loader;
+		return $this->container->make(Loader::class);
 	}
 
 	public function components (): object
 	{
-		return $this->components;
+		return $this->container->make(ComponentRegistry::class);;
 	}
 
 	public function use (Middleware $middleware): void
 	{
-		$this->middlewarePipeline->add($middleware);
+		$pipeline = $this->container->make(middlewarePipeline::class);
+		$pipeline->add($middleware);
 	}
 
 	public function container ()
 	{
-		return
+		return $this->container;
 	}
 
 	public function run (): void
 	{
-		try
-		{
-			$response = $this->router->call();
-		}
-		catch(\ErrorException $ex)
-		{
-			$this->logger->error($ex->getMessage());
-		}
-		finally
-		{
-			die();
-		}
+		$router = $this->container->make(Router::class);
+		$response = $router->call();
 	}
 }
 

@@ -3,10 +3,9 @@
 namespace GioPHP\Routing;
 
 use GioPHP\Http\{Request, Response};
-use GioPHP\Services\{Loader, Logger, ComponentRegistry};
+use GioPHP\Services\{Loader, Logger, ComponentRegistry, MiddlewarePipeline, DIContainer};
 use GioPHP\Database\Db;
 use GioPHP\Routing\ControllerRoute;
-use GioPHP\Services\MiddlewarePipeline;
 use GioPHP\Enums\HttpMethod;
 
 use function GioPHP\Helpers\getControllerSchemas;
@@ -18,13 +17,9 @@ class Router
 
 	private string $notFoundPage = "";
 
-	private Loader $loader;
-	private Logger $logger;
-	private Db $db;
-	private ComponentRegistry $components;
-	private MiddlewarePipeline $middlewarePipeline;
+	private DIContainer $container;
 
-	public function __construct (Loader $loader, Logger $logger, Db $db, ComponentRegistry $components, middlewarePipeline $middlewarePipeline)
+	public function __construct (DIContainer $container)
 	{
 		$this->routes = [
 			HttpMethod::GET 		=> [],
@@ -33,11 +28,7 @@ class Router
 			HttpMethod::DELETE 		=> []
 		];
 
-		$this->loader = $loader;
-		$this->logger = $logger;
-		$this->db = $db;
-		$this->components = $components;
-		$this->middlewarePipeline = $middlewarePipeline;
+		$this->container = $container;
 	}
 
 	public function addController (string $controller): void
@@ -71,8 +62,12 @@ class Router
 
 	public function call (): void
 	{
-		$req = new Request($this->logger);
-		$res = new Response($this->loader, $this->logger, $this->components);
+		$req = new Request($this->container->make(Logger::class));
+		$res = new Response(
+			$this->container->make(Loader::class),
+			$this->container->make(Logger::class),
+			$this->container->make(ComponentRegistry::class)
+		);
 
 		$requestMethod = $req->method;
 
@@ -94,7 +89,7 @@ class Router
 		$req->getSchema($route->schema);
 
 		// Instantiates the route controller
-		$controller = $this->controllerInstantiator($route->getController());
+		$controller = $this->container->make($route->getController());
 
 		// Self-contained route enqueued for the pipeline
 		$routeQueued = function () use ($req, $res, $route, $controller) {
@@ -102,10 +97,10 @@ class Router
 		};
 
 		// Add route-specific middlewares to the pipeline
-		$this->middlewarePipeline->addMultiple($route->middlewares);
+		$this->container->make(middlewarePipeline::class)->addMultiple($route->middlewares);
 
 		// Middleware pipeline prepare and execute
-		$this->middlewarePipeline->handle($req, $res, $routeQueued);
+		$this->container->make(middlewarePipeline::class)->handle($req, $res, $routeQueued);
 	}
 
 	// Checks whether a method exists in this router
@@ -117,43 +112,6 @@ class Router
 		}
 
 		return false;
-	}
-
-	private function controllerInstantiator (string $className): object
-	{
-		$reflection = new \ReflectionClass($className);
-		$constructor = $reflection->getConstructor();
-
-		if(is_null($constructor))
-		{
-			return new $className();
-		}
-
-		// Available parameters for the controller's constructor
-		$possibleParameters = [
-			'database' 		=> $this->db,
-			'logger' 		=> $this->logger
-		];
-
-		$controllerParams = [];
-
-		foreach($constructor->getParameters() as $param):
-
-			$paramName = $param->getName();
-
-			if(!array_key_exists($paramName, $possibleParameters))
-			{
-				continue;
-			}
-
-			$controllerParams[$paramName] = $possibleParameters[$paramName];
-
-		endforeach;
-
-		// TODO: If constructor names mismatch, the instance fails.
-		// Implement a way customized names can be set on the constructors
-
-		return new $className(...$controllerParams);
 	}
 }
 
