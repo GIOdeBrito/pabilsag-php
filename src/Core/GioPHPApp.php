@@ -3,7 +3,7 @@
 namespace GioPHP\Core;
 
 define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
-define("GIOPHP_IS_DEBUG", false);
+define("GIOPHP_IS_DEBUG", true);
 
 require_once __DIR__.'/../Helpers/DateTime.php';
 require_once __DIR__.'/../Helpers/RouteAttributes.php';
@@ -14,7 +14,8 @@ use GioPHP\Services\{
 	Loader,
 	Logger,
 	ComponentRegistry,
-	MiddlewarePipeline
+	MiddlewarePipeline,
+	DIContainer
 };
 use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
@@ -27,6 +28,7 @@ if(!constant("GIOPHP_IS_DEBUG"))
 
 class GioPHPApp
 {
+	private ?DIContainer $container = NULL;
 	private ?Router $router = NULL;
 	private ?Loader $loader = NULL;
 	private ?Logger $logger = NULL;
@@ -36,8 +38,11 @@ class GioPHPApp
 
 	public function __construct ()
 	{
-		$this->logger = new Logger();
-		$this->loader = new Loader();
+		$container = = new DIContainer();
+		$this->container $container;
+
+		$container->bind(Loader::class, fn() => new Logger());
+		$container->bind(Logger::class, fn() => new Loader());
 
 		$this->components = new ComponentRegistry($this->logger);
 		$this->db = new Db($this->loader, $this->logger);
@@ -69,6 +74,11 @@ class GioPHPApp
 	public function use (Middleware $middleware): void
 	{
 		$this->middlewarePipeline->add($middleware);
+	}
+
+	public function container ()
+	{
+		return
 	}
 
 	public function run (): void
