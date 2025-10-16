@@ -19,28 +19,13 @@ final class DIContainer
 		$this->binds[$abstract] = $factory;
 	}
 
-	public function make (string $class): mixed
+	public function make (string $class): object
 	{
-		// Singleton dependency
-		if(isset($this->singleton[$class]))
+		$dependency = $this->getBindOrSingletonDependency($class);
+
+		if(!is_null($dependency))
 		{
-			// Returns instance
-			if(!is_callable($this->singleton[$class]))
-			{
-				return $this->singleton[$class];
-			}
-
-			// Creates instance and returns
-			$this->singleton[$class] = ($this->singleton[$class])($this);
-			return $this->singleton[$class];
-		}
-
-		//var_dump($this->binds);
-
-		// Transient dependency
-		if(isset($this->binds[$class]))
-		{
-			return ($this->binds[$class])($this);
+			return $dependency;
 		}
 
 		if(!class_exists($class))
@@ -67,23 +52,50 @@ final class DIContainer
 		    if(!is_null($paramInfo->defaultValue))
 		    {
 		        $args[] = $paramInfo->defaultValue;
+				continue;
 		    }
 
+			// Ignore primitive types i.e. int, string...
 		    if($paramInfo->isPrimitive)
 		    {
 		        continue;
 		    }
 
-		    $name = $paramInfo->typeName;
+			$paramTypeName = $paramInfo->typeName;
 
-		    if(isset($this->binds[$name]) || isset($this->singleton[$name]))
+		    if(isset($this->binds[$paramTypeName]) || isset($this->singleton[$paramTypeName]))
 		    {
-		        $args[] = $this->make($name);
+		        $args[] = $this->make($paramTypeName);
 		    }
 
 		endforeach;
 
         return $reflection->newInstanceArgs($args);
+	}
+
+	private function getBindOrSingletonDependency (string $class): object|null
+	{
+		// Singleton dependency
+		if(isset($this->singleton[$class]))
+		{
+			// Returns instance
+			if(!is_callable($this->singleton[$class]))
+			{
+				return $this->singleton[$class];
+			}
+
+			// Creates instance and returns
+			$this->singleton[$class] = ($this->singleton[$class])($this);
+			return $this->singleton[$class];
+		}
+
+		// Transient dependency
+		if(isset($this->binds[$class]))
+		{
+			return ($this->binds[$class])($this);
+		}
+
+		return NULL;
 	}
 
 	private function parameterDissect (\ReflectionParameter $param): object
@@ -92,7 +104,7 @@ final class DIContainer
 	        'varName' => $param->getName(),
 	        'typeName' => $param->getType()->getName(),
 	        'type' => $param->getType(),
-	        'defaultValue' => $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null,
+			'defaultValue' => $param->isDefaultValueAvailable() ? $param->getDefaultValue() : NULL,
 	        'isPrimitive' => $param->getType()->isBuiltIn()
 	    ];
 
