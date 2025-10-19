@@ -27,6 +27,14 @@ function convertToType (mixed $value, string $type = 'any', bool $isArray = fals
 			return toDateTime($value);
 			break;
 
+		case 'array':
+			return (array) $value;
+			break;
+
+		case 'object':
+			return (object) $value;
+			break;
+
 		case 'any':
 			return $value;
 			break;

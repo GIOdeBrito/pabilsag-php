@@ -47,6 +47,17 @@ class ApiController extends Controller
 
 		$res->end(200);
 	}
+
+	#[Route(
+		method: 'POST',
+		path: '/public/api/v1/jsondump',
+		description: 'JSON dump',
+		schema: [ 'content' => 'json:object' ]
+	)]
+	public function jsonDump ($req, $res): void
+	{
+		var_dump($req->body->content);
+	}
 }
 
 ?>

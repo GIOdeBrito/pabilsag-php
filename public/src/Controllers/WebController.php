@@ -9,10 +9,8 @@ class WebController extends Controller
 {
 	private ?CurlClient $curl = NULL;
 
-	public function __construct ($database, $logger)
+	public function __construct ()
 	{
-		parent::__construct($database, $logger);
-
 		$this->curl = new CurlClient();
 	}
 
