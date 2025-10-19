@@ -27,6 +27,7 @@ $app->error()->setErrorCallback(function ($message)
 	echo "<p>{$message}</p>";
 });
 
+// Controllers registered on router
 $app->router()->addController(Home::class);
 $app->router()->addController(FileController::class);
 $app->router()->addController(ApiController::class);
@@ -34,9 +35,11 @@ $app->router()->addController(WebController::class);
 $app->router()->addController(MiddlewareController::class);
 $app->router()->addController(DIController::class);
 
+// Component use and import
 $app->components()->useComponents(true);
 $app->components()->import(include constant('ABSPATH').'/src/Components/ButtonIcon/button-icon.php');
 
+// Dependency injection bind
 $app->container()->bind(SessionManager::class, fn($container) => new SessionManager($container->make(GioPHP\Services\Logger::class)));
 
 $app->run();
