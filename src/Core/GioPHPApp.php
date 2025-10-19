@@ -3,11 +3,10 @@
 namespace GioPHP\Core;
 
 define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
-define("GIOPHP_IS_DEBUG", true);
 
-require_once __DIR__.'/../Helpers/DateTime.php';
-require_once __DIR__.'/../Helpers/RouteAttributes.php';
-require_once __DIR__.'/../Helpers/Types.php';
+require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/DateTime.php';
+require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/RouteAttributes.php';
+require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/Types.php';
 
 use GioPHP\Routing\Router;
 use GioPHP\Services\{
@@ -21,19 +20,17 @@ use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
 use GioPHP\Database\Db as Database;
 
-if(!constant("GIOPHP_IS_DEBUG"))
-{
-	new ErrorHandler();
-}
-
 class GioPHPApp
 {
 	private ?DIContainer $container = NULL;
+	private ?ErrorHandler $errorHandler = NULL;
 
 	public function __construct ()
 	{
 		$container = new DIContainer();
 		$this->container = $container;
+
+		$this->errorHandler = new ErrorHandler();
 
 		$container->bind(Logger::class, fn() => new Logger());
 
@@ -80,9 +77,14 @@ class GioPHPApp
 		$pipeline->add($middleware);
 	}
 
-	public function container ()
+	public function container (): DIContainer
 	{
 		return $this->container;
+	}
+
+	public function error (): ErrorHandler
+	{
+		return $this->errorHandler;
 	}
 
 	public function run (): void

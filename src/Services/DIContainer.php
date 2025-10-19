@@ -30,7 +30,7 @@ final class DIContainer
 
 		if(!class_exists($class))
 		{
-		    throw new Exception("DIContainer: class '{$class}' does not exist.");
+			throw new \Exception("DIContainer: class '{$class}' does not exist.");
 		}
 
 		$reflection = new \ReflectionClass($class);

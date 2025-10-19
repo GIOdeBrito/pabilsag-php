@@ -2,8 +2,10 @@
 
 namespace GioPHP\Error;
 
-class ErrorHandler
+final class ErrorHandler
 {
+	private \Closure $shutdownHandler;
+
 	public function __construct ()
 	{
 		// Do not allow errors to be written on the HTML document
@@ -12,6 +14,21 @@ class ErrorHandler
 
 		$this->initErrorHandler();
 		$this->initShutdownHandler();
+
+		$this->shutdownHandler = function ()
+		{
+			echo file_get_contents(constant('GIOPHP_SRC_ROOT_PATH').'/Template/InternalError.php');
+		};
+	}
+
+	public function setErrorCallback (callable $func)
+	{
+		$this->shutdownHandler = $func;
+	}
+
+	public function disableHandler (bool $value = false)
+	{
+
 	}
 
 	private function initErrorHandler (): void
@@ -50,7 +67,7 @@ class ErrorHandler
 
 			error_log($output);
 
-			echo file_get_contents(__DIR__.'/../Template/InternalError.php');
+			call_user_func($this->shutdownHandler);
 			die();
 		});
 	}

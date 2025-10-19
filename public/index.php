@@ -14,6 +14,9 @@ require 'src/Controllers/WebController.php';
 require 'src/Controllers/MiddlewareController.php';
 require 'src/Controllers/DIController.php';
 
+// For dependency injection
+require 'src/DependencyInjection/SessionManager.php';
+
 $app = new App();
 
 $app->loader()->setViewDirectory(__DIR__."/src/Views");
@@ -28,6 +31,8 @@ $app->router()->addController(DIController::class);
 
 $app->components()->useComponents(true);
 $app->components()->import(include constant('ABSPATH').'/src/Components/ButtonIcon/button-icon.php');
+
+$app->container()->bind(SessionManager::class, fn($container) => new SessionManager($container->make(GioPHP\Services\Logger::class)));
 
 $app->run();
 
