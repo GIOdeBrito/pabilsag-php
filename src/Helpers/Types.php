@@ -35,13 +35,13 @@ function convertToType (mixed $value, string $type = 'any', bool $isArray = fals
 			return (object) $value;
 			break;
 
-		case 'any':
-			return $value;
+		case 'string':
+			return strval($value);
 			break;
 
-		case 'string':
+		case 'any':
 		default:
-			return strval($value);
+			return $value;
 			break;
 	}
 }
