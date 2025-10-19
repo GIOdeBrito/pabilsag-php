@@ -21,6 +21,11 @@ $app = new App();
 
 $app->loader()->setViewDirectory(__DIR__."/src/Views");
 $app->loader()->setConnectionString("sqlite:".__DIR__.'/database.db');
+$app->error()->setErrorCallback(function ($message)
+{
+	echo "<h1>Uh-oh. There was an error!</h1>";
+	echo "<p>{$message}</p>";
+});
 
 $app->router()->addController(Home::class);
 $app->router()->addController(FileController::class);

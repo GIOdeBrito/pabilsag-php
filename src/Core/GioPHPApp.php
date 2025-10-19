@@ -30,8 +30,6 @@ class GioPHPApp
 		$container = new DIContainer();
 		$this->container = $container;
 
-		$this->errorHandler = new ErrorHandler();
-
 		$container->bind(Logger::class, fn() => new Logger());
 
 		$container->singleton(Loader::class, fn() => new Loader());
@@ -49,6 +47,8 @@ class GioPHPApp
 		));
 
 		$container->singleton(Router::class, fn($container) => new Router($container));
+
+		$this->errorHandler = new ErrorHandler($container->make(Logger::class));
 	}
 
 	public function logger (): object

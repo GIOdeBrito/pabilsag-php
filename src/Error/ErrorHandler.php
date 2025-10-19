@@ -2,12 +2,18 @@
 
 namespace GioPHP\Error;
 
+use GioPHP\Services\Logger;
+
 final class ErrorHandler
 {
 	private \Closure $shutdownHandler;
 
-	public function __construct ()
+	private Logger $logger;
+
+	public function __construct (Logger $logger)
 	{
+		$this->logger = $logger;
+
 		// Do not allow errors to be written on the HTML document
 		ini_set('display_errors', '0');
 		error_reporting(E_ALL);
@@ -26,11 +32,6 @@ final class ErrorHandler
 		$this->shutdownHandler = $func;
 	}
 
-	public function disableHandler (bool $value = false)
-	{
-
-	}
-
 	private function initErrorHandler (): void
 	{
 		// Convert errors into exceptions
@@ -42,7 +43,7 @@ final class ErrorHandler
 
 			$output = "GioPHP ERROR -> {$message}. File: {$file}. Line: {$line}";
 
-			error_log($output);
+			$this->logger->error($output);
 
 			throw new \ErrorException($message, 0, $severity, $file, $line);
 		});
@@ -65,9 +66,9 @@ final class ErrorHandler
 
 			$output = "GioPHP ERROR -> {$message}. File: {$file}. Line: {$line}";
 
-			error_log($output);
+			$this->logger->error($output);
 
-			call_user_func($this->shutdownHandler);
+			call_user_func_array($this->shutdownHandler, [ $message, $file, $line ]);
 			die();
 		});
 	}
