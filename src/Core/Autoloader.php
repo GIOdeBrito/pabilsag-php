@@ -34,7 +34,6 @@ spl_autoload_register(function (string $classname)
 	if(!file_exists($fullpath))
 	{
 		throw new Exception("Class '{$classname}' not found");
-		return;
 	}
 
 	require $fullpath;
