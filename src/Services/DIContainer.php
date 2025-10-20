@@ -39,7 +39,7 @@ final class DIContainer
 		// Returns new instance if class has no dependencies
 		if(is_null($constructor))
 		{
-			return new $reflection->newInstance();
+			return $reflection->newInstance();
 		}
 
 		$args = [];
