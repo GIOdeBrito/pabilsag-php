@@ -1,11 +1,9 @@
 <?php
 
-use GioPHP\MVC\Controller;
-
 use GioPHP\Attributes\Route;
 use GioPHP\Web\CurlClient;
 
-class WebController extends Controller
+class WebController
 {
 	private ?CurlClient $curl = NULL;
 

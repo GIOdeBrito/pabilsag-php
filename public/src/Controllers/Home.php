@@ -2,10 +2,9 @@
 
 require constant('ABSPATH').'/src/Models/Users.php';
 
-use GioPHP\MVC\Controller;
 use GioPHP\Attributes\Route;
 
-class Home extends Controller
+class Home
 {
 	#[Route(
 		method: 'GET',

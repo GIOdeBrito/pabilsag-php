@@ -1,9 +1,8 @@
 <?php
 
-use GioPHP\MVC\Controller;
 use GioPHP\Attributes\Route;
 
-class ApiController extends Controller
+class ApiController
 {
 	#[Route(
 		method: 'POST',

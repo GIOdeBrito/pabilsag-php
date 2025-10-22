@@ -1,10 +1,7 @@
 <?php
 
-use GioPHP\MVC\Controller;
 use GioPHP\Enums\ContentType;
-
 use GioPHP\Attributes\Route;
-
 use GioPHP\Services\Logger;
 
 class DIController

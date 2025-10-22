@@ -101,7 +101,8 @@ class Response
 			echo "Internal Server Error";
 		}
 
-		return;
+		// NOTE: Use die instead of 'return'
+		die();
 	}
 
 	private function sendView (string $view, string $layout, array|object $params): void
@@ -143,7 +144,8 @@ class Response
 
 	private function sendJson (array|object $body): void
 	{
-		echo json_encode($body ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+		// NOTE: No pretty print for JSON
+		echo json_encode($body ?? [], JSON_UNESCAPED_UNICODE);
 	}
 
 	private function sendHtml (string $html): void

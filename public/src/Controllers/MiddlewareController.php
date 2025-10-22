@@ -1,12 +1,10 @@
 <?php
 
-use GioPHP\MVC\Controller;
-
 use GioPHP\Attributes\Route;
 
 include __DIR__.'/../Middlewares/Auth.php';
 
-class MiddlewareController extends Controller
+class MiddlewareController
 {
 	#[Route(
 		method: 'GET',
