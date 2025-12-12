@@ -8,6 +8,7 @@ require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/DateTime.php';
 require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/RouteAttributes.php';
 require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/Types.php';
 
+use GioPHP\Http\Request;
 use GioPHP\Routing\Router;
 use GioPHP\Services\{
 	Loader,
@@ -31,6 +32,14 @@ class GioPHPApp
 		$this->container = $container;
 
 		$container->bind(Logger::class, fn() => new Logger());
+		
+		$container->bind(Request::class, fn() => new Request(
+			$_SERVER,
+			$_GET,
+			$_POST,
+			[],
+			file_get_contents('php://input')
+		));
 
 		$container->singleton(Loader::class, fn() => new Loader());
 		$container->singleton(ComponentRegistry::class, fn($container) => new ComponentRegistry(
@@ -89,8 +98,13 @@ class GioPHPApp
 
 	public function run (): void
 	{
+		$request = $this->container->make(Request::class);
+		
 		$router = $this->container->make(Router::class);
-		$response = $router->call();
+		$response = $router->call($request);
+		
+		// Send stuff to browser
+		$response->send();
 	}
 }
 

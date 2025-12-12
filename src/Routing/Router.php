@@ -2,8 +2,8 @@
 
 namespace GioPHP\Routing;
 
-use GioPHP\Http\{Request, Response};
-use GioPHP\Services\{Loader, Logger, ComponentRegistry, MiddlewarePipeline, DIContainer};
+use GioPHP\Http\{ Request, Response };
+use GioPHP\Services\{ Loader, Logger, ComponentRegistry, MiddlewarePipeline, DIContainer };
 use GioPHP\Database\Db;
 use GioPHP\Routing\ControllerRoute;
 use GioPHP\Enums\HttpMethod;
@@ -37,11 +37,6 @@ class Router
 
 		foreach($schemas as $schema):
 
-			if(!$this->methodExists($schema->method))
-			{
-				throw new \Exception("Method: '{$schema->method}' is not valid.");
-			}
-
 			$controllerRoute = new ControllerRoute();
 			$controllerRoute->method = $schema->method;
 			$controllerRoute->path = $schema->path;
@@ -60,58 +55,43 @@ class Router
 		endforeach;
 	}
 
-	public function call (): void
+	public function call (Request $request): Response
 	{
-		$req = new Request($this->container->make(Logger::class));
-		$res = new Response(
-			$this->container->make(Loader::class),
-			$this->container->make(Logger::class),
-			$this->container->make(ComponentRegistry::class)
-		);
+		$requestMethod = $request->getMethod();
+		$requestUri = $request->getUri();
 
-		$requestMethod = $req->method;
-
-		if(!$this->methodExists($requestMethod))
-		{
-			$res->redirect("/");
-		}
-
-		$requestPath = $req->path;
-
-		if(!array_key_exists($requestPath, $this->routes[$requestMethod]))
+		if(!array_key_exists($requestUri, $this->routes[$requestMethod]))
 		{
 			$res->redirect($this->notFoundPage);
 		}
 
-		$route = $this->routes[$requestMethod][$requestPath];
+		$route = $this->routes[$requestMethod][$requestUri];
 
 		// Get the route schema i.e. the expected variables
-		$req->getSchema($route->schema);
+		//$request->getSchema($route->schema);
 
 		// Instantiates the route controller
 		$controller = $this->container->make($route->getController());
 
 		// Self-contained route enqueued for the pipeline
-		$routeQueued = function () use ($req, $res, $route, $controller) {
-			$controller->{$route->getControllerMethod()}($req, $res);
+		$routeQueued = function () use ($request, $route, $controller) {
+			
+			$response = new Response(
+				$this->container->make(Loader::class),
+				$this->container->make(Logger::class),
+				$this->container->make(ComponentRegistry::class)
+			);
+			
+			$controller->{$route->getControllerMethod()}($request, $response);
 		};
 
 		// Add route-specific middlewares to the pipeline
-		$this->container->make(middlewarePipeline::class)->addMultiple($route->middlewares);
+		$this->container->make(MiddlewarePipeline::class)->addMultiple($route->middlewares);
 
 		// Middleware pipeline prepare and execute
-		$this->container->make(middlewarePipeline::class)->handle($req, $res, $routeQueued);
-	}
-
-	// Checks whether a method exists in this router
-	private function methodExists (string $method): bool
-	{
-		if(array_key_exists($method, $this->routes))
-		{
-			return true;
-		}
-
-		return false;
+		$response = $this->container->make(MiddlewarePipeline::class)->handle($request, $routeQueued);
+		
+		return $response;
 	}
 }
 
