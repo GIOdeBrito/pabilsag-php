@@ -74,23 +74,25 @@ class Router
 		$controller = $this->container->make($route->getController());
 
 		// Self-contained route enqueued for the pipeline
-		$routeQueued = function () use ($request, $route, $controller) {
-			
+/*		$routeQueued = function () use ($request, $route, $controller) {
+
 			$response = new Response(
 				$this->container->make(Loader::class),
 				$this->container->make(Logger::class),
 				$this->container->make(ComponentRegistry::class)
 			);
-			
+
 			$controller->{$route->getControllerMethod()}($request, $response);
-		};
+		};*/
 
 		// Add route-specific middlewares to the pipeline
 		$this->container->make(MiddlewarePipeline::class)->addMultiple($route->middlewares);
 
-		// Middleware pipeline prepare and execute
+		// Execute middleware pipeline before controller
 		$response = $this->container->make(MiddlewarePipeline::class)->handle($request, $routeQueued);
-		
+
+		$controller->{$route->getControllerMethod()}($request, $response);
+
 		return $response;
 	}
 }

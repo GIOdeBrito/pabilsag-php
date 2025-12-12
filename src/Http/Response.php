@@ -2,11 +2,11 @@
 
 namespace GioPHP\Http;
 
-use GioPHP\Enums\{ResponseTypes, ContentType};
-use GioPHP\Services\{Loader, Logger, ComponentRegistry};
+use GioPHP\Enums\{ ResponseTypes, ContentType };
+use GioPHP\Services\{ Loader, Logger, ComponentRegistry };
 use GioPHP\View\ViewRenderer;
 use GioPHP\Interfaces\ResponseInterface;
-use GioPHP\Http\Response\{FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse};
+use GioPHP\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
 
 class Response
 {
@@ -14,6 +14,7 @@ class Response
 	private Loader $loader;
 	private Logger $logger;
 	private ComponentRegistry $components;
+	private ResponseInterface $prepared;
 
 	public function __construct (Loader $loader, Logger $logger, ComponentRegistry $components)
 	{
@@ -22,41 +23,45 @@ class Response
 		$this->components = $components;
 	}
 
-	public function status (int $code): Response
+	public function status (int $code = 200): Response
 	{
-		$this->code = $code ?? 200;
+		$this->code = $code;
 		return $this;
 	}
 
 	public function render (string $view, string $layout = '_layout', array $params = []): void
 	{
-		$this->send(new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params));
+		//$this->send(new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params));
+		$this->prepared = new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params);
 	}
 
 	public function html (string $html): void
 	{
-		$this->send(new HtmlResponse(status: $this->code, html: $html));
+		//$this->send(new HtmlResponse(status: $this->code, html: $html));
+		$this->prepared = new HtmlResponse(status: $this->code, html: $html);
 	}
 
 	public function json (array|object $data): void
 	{
-		$this->send(new JsonResponse(status: $this->code, body: $data));
+		//$this->send(new JsonResponse(status: $this->code, body: $data));
+		$this->prepared = new JsonResponse(status: $this->code, body: $data);
 	}
 
 	public function plain (string $text): void
 	{
-		$this->send(new PlainResponse(status: $this->code, text: $text));
+		//$this->send(new PlainResponse(status: $this->code, text: $text));
+		$this->prepared = new PlainResponse(status: $this->code, text: $text);
 	}
 
 	public function file (string $path, string $type = ContentType::FileStream, string $filename = ''): void
 	{
-		$this->send(new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename));
+		//$this->send(new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename));
+		$this->prepared = new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename);
 	}
 
 	public function end (int $status = 200): void
 	{
 		http_response_code($status);
-		return;
 	}
 
 	public function redirect (string $url): void
@@ -66,8 +71,10 @@ class Response
 		die();
 	}
 
-	private function send ($response): void
+	private function send (): void
 	{
+		$response = $this->prepared;
+
 		http_response_code(intval($response->getStatus()));
 		header('Content-Type: '.$response->getContentType());
 
@@ -100,9 +107,6 @@ class Response
 			http_response_code(500);
 			echo "Internal Server Error";
 		}
-
-		// NOTE: Use die instead of 'return'
-		die();
 	}
 
 	private function sendView (string $view, string $layout, array|object $params): void

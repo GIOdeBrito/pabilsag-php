@@ -99,10 +99,10 @@ class GioPHPApp
 	public function run (): void
 	{
 		$request = $this->container->make(Request::class);
-		
+
 		$router = $this->container->make(Router::class);
 		$response = $router->call($request);
-		
+
 		// Send stuff to browser
 		$response->send();
 	}
