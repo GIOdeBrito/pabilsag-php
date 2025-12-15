@@ -29,45 +29,41 @@ class MiddlewarePipeline
 		$this->middlewares = array_merge($this->middlewares, $collection);
 	}
 
-	public function handle ($request, $response, $route): void
+	public function handle($request, $response, callable $route)
 	{
 		$queue = $this->middlewares;
-		array_push($queue, $route);
+		$index = 0;
 
-		$runMiddleware = function () use (&$queue, $request, $response, &$runMiddleware) {
+		$dispatcher = function () use (
+			&$dispatcher,
+			$queue,
+			&$index,
+			$request,
+			$response,
+			$route
+		) {
+			// Still have middleware to run
+			if (isset($queue[$index])) {
+				$middleware = $queue[$index++];
 
-			$current = current($queue);
-
-			if(is_null($current) OR $current === false)
-			{
-		        return;
-		    }
-
-			// Advance array pointer
-		    next($queue);
-
-			$next = function() use (&$runMiddleware) {
-		        $runMiddleware();
-			};
-
-			// Instantiate if string is a class
-			if($this->isMiddlewareInstance($current))
-			{
-				// Call current middleware
-				(new $current())->handle($request, $response, $next);
-				return;
+				return (new $middleware())->handle(
+					$request,
+					$response,
+					fn ($request, $response) => $dispatcher()
+				);
 			}
 
-			// Spawn the route
-			$current($request, $response, $next);
+			// No middleware left → run route (NO next)
+			return $route($request, $response);
 		};
 
-		$runMiddleware();
+		return $dispatcher();
 	}
+
 
 	private function isMiddlewareInstance (string|object $target): bool
 	{
-		if(is_string($target) AND is_a($target, 'GioPHP\Interfaces\Middleware', true))
+		if(is_string($target) && is_a($target, 'GioPHP\Interfaces\Middleware', true))
 		{
 			return true;
 		}

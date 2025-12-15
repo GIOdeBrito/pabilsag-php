@@ -32,7 +32,7 @@ class GioPHPApp
 		$this->container = $container;
 
 		$container->bind(Logger::class, fn() => new Logger());
-		
+
 		$container->bind(Request::class, fn() => new Request(
 			$_SERVER,
 			$_GET,
@@ -104,7 +104,7 @@ class GioPHPApp
 		$response = $router->call($request);
 
 		// Send stuff to browser
-		$response->send();
+		//$response->send();
 	}
 }
 

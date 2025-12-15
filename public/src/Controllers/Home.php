@@ -11,13 +11,13 @@ class Home
 		path: '/public/',
 		description: 'Home page.'
 	)]
-	public function index ($req, $res): void
+	public function index ($req, $res)
 	{
 		$viewData = [
 			'title' => 'Home'
 		];
 
-		$res->status(200)->render('Home', '_layout', $viewData);
+		return $res->status(200)->render('Home', '_layout', $viewData);
 	}
 
 	#[Route(
