@@ -3,17 +3,19 @@
 namespace GioPHP\Services;
 
 use GioPHP\Interfaces\Middleware;
-use GioPHP\Services\Logger;
+use GioPHP\Services\DIContainer;
 use GioPHP\Http\{ Request, Response };
 
 class MiddlewarePipeline
 {
 	private array $middlewares = [];
+	private DIContainer $container;
 	private Logger $logger;
 
-	public function __construct (Logger $logger)
+	public function __construct (DIContainer $container)
 	{
-		$this->logger = $logger;
+		$this->logger = $container->make(Logger::class);
+		$this->container = $container;
 	}
 
 	public function add (Middleware $middleware): void
@@ -33,6 +35,8 @@ class MiddlewarePipeline
 	{
 		$queue = $this->middlewares;
 		$index = 0;
+		
+		$container = $this->container;
 
 		$dispatcher = function () use (
 			&$dispatcher,
@@ -40,13 +44,14 @@ class MiddlewarePipeline
 			&$index,
 			$request,
 			$response,
-			$route
+			$route,
+			$container
 		) {
 			// Still have middleware to run
 			if (isset($queue[$index])) {
 				$middleware = $queue[$index++];
 
-				return (new $middleware())->handle(
+				return $this->container->make($middleware)->handle(
 					$request,
 					$response,
 					fn ($request, $response) => $dispatcher()
@@ -61,7 +66,6 @@ class MiddlewarePipeline
 
 		return $finalResponse;
 	}
-
 
 	private function isMiddlewareInstance (string|object $target): bool
 	{

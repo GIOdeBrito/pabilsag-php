@@ -1,17 +1,29 @@
 <?php
 
 use GioPHP\Interfaces\Middleware;
+use GioPHP\Services\Logger;
 
-class authMiddleware implements Middleware
+class AuthMiddleware implements Middleware
 {
-	public function handle ($req, $res, $next)
+	private Logger $logger;
+	
+	public function __construct (Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+	
+	public function handle ($req, $res, callable $next)
 	{
 		if(!isset($req->body->authBasic))
 		{
-			error_log("Request does not contain basic auth");
+			$this->logger->info("Request does not contain basic auth");
 		}
-
-		$next();
+		
+		$response = $next($req, $res);
+		
+		$this->logger->info("Middleware will now check the response object");
+		
+		return $response;
 	}
 }
 

@@ -51,9 +51,7 @@ class GioPHPApp
 			$container->make(Logger::class)
 		));
 
-		$container->singleton(MiddlewarePipeline::class, fn($container) => new MiddlewarePipeline(
-			$container->make(Logger::class)
-		));
+		$container->singleton(MiddlewarePipeline::class, fn($container) => new MiddlewarePipeline($container));
 
 		$container->singleton(Router::class, fn($container) => new Router($container));
 

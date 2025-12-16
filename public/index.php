@@ -14,10 +14,12 @@ require 'src/Controllers/WebController.php';
 require 'src/Controllers/MiddlewareController.php';
 require 'src/Controllers/DIController.php';
 
+// For dependency injection
+require 'src/DependencyInjection/SessionManager.php';
+
 $app = new App();
 
-$app->loader()->setViewDirectory(__DIR__."/src/Views");
-$app->loader()->setConnectionString("sqlite:".__DIR__.'/database.db');
+$app->loader()->setViewDirectory(ABSPATH."/src/Views");
 $app->error()->setErrorCallback(function ($message)
 {
 	echo "<h1>Uh-oh. There was an error!</h1>";
@@ -35,6 +37,11 @@ $app->router()->addController(DIController::class);
 // Component use and import
 $app->components()->useComponents(true);
 $app->components()->import(include constant('ABSPATH').'/src/Components/ButtonIcon/button-icon.php');
+
+// Dependency injection bind
+$app->container()->bind(SessionManager::class, fn($container) => new SessionManager(
+	$container->make(GioPHP\Services\Logger::class)
+));
 
 $app->run();
 

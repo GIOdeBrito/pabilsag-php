@@ -17,6 +17,8 @@ class Home
 		$viewData = [
 			'title' => 'Home'
 		];
+		
+		//var_dump($req->getQuery());
 
 		return $res->status(200)->render('Home', '_layout', $viewData);
 	}

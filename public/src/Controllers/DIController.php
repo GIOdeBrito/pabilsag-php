@@ -3,6 +3,7 @@
 use GioPHP\Enums\ContentType;
 use GioPHP\Attributes\Route;
 use GioPHP\Services\Logger;
+use GioPHP\Http\Response;
 
 class DIController
 {
@@ -20,13 +21,13 @@ class DIController
 		path: '/public/injection',
 		description: 'Dependency injection test.'
 	)]
-	public function DITest ($req, $res): void
+	public function DITest ($req, $res): Response
 	{
 		//var_dump($this->logger);
 
 		$this->logger->info("Logger created from the dependency injection container!");
 
-		$res->status(200)->html('<p>Check the log output.</p>');
+		return $res->status(200)->html('<p>Check the log output.</p>');
 	}
 
 	#[Route(
@@ -34,11 +35,11 @@ class DIController
 		path: '/public/injection/session',
 		description: 'Dependency injection test.'
 	)]
-	public function Session ($req, $res): void
+	public function Session ($req, $res): Response
 	{
 		$content = $this->manager->getSession();
 
-		$res->status(200)->json($content);
+		return $res->status(200)->json($content);
 	}
 }
 
