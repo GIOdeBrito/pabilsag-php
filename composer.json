@@ -16,7 +16,6 @@
 	  "/Dockerfile",
 	  "/public",
 	  "/public-standalone",
-	  "/Installer.php",
 	  "/.gitignore",
 	  "/.git"
     ]
