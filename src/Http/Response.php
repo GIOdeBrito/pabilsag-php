@@ -29,39 +29,45 @@ class Response
 		return $this;
 	}
 
-	public function render (string $view, string $layout = '_layout', array $params = []): void
+	public function render (string $view, string $layout = '_layout', array $params = []): Response
 	{
 		//$this->send(new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params));
 		$this->prepared = new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params);
+		return $this;
 	}
 
-	public function html (string $html): void
+	public function html (string $html): Response
 	{
 		//$this->send(new HtmlResponse(status: $this->code, html: $html));
 		$this->prepared = new HtmlResponse(status: $this->code, html: $html);
+		return $this;
 	}
 
-	public function json (array|object $data): void
+	public function json (array|object $data): Response
 	{
 		//$this->send(new JsonResponse(status: $this->code, body: $data));
 		$this->prepared = new JsonResponse(status: $this->code, body: $data);
+		return $this;
 	}
 
-	public function plain (string $text): void
+	public function plain (string $text): Response
 	{
 		//$this->send(new PlainResponse(status: $this->code, text: $text));
 		$this->prepared = new PlainResponse(status: $this->code, text: $text);
+		return $this;
 	}
 
-	public function file (string $path, string $type = ContentType::FileStream, string $filename = ''): void
+	public function file (string $path, string $type = ContentType::FileStream, string $filename = ''): Response
 	{
 		//$this->send(new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename));
 		$this->prepared = new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename);
+		return $this;
 	}
 
-	public function end (int $status = 200): void
+	public function end (int $status = 200): Response
 	{
-		http_response_code($status);
+		$this->prepared = new HtmlResponse(status: $this->status, html: '');
+		return $this;
 	}
 
 	public function redirect (string $url): void
@@ -71,7 +77,7 @@ class Response
 		die();
 	}
 
-	private function send (): void
+	public function send (): void
 	{
 		$response = $this->prepared;
 

@@ -4,7 +4,7 @@ namespace GioPHP\Services;
 
 use GioPHP\Interfaces\Middleware;
 use GioPHP\Services\Logger;
-use GioPHP\Http\{Request, Response};
+use GioPHP\Http\{ Request, Response };
 
 class MiddlewarePipeline
 {
@@ -29,7 +29,7 @@ class MiddlewarePipeline
 		$this->middlewares = array_merge($this->middlewares, $collection);
 	}
 
-	public function handle($request, $response, callable $route)
+	public function handle (Request $request, Response $response, callable $route): Response
 	{
 		$queue = $this->middlewares;
 		$index = 0;
@@ -53,11 +53,13 @@ class MiddlewarePipeline
 				);
 			}
 
-			// No middleware left → run route (NO next)
+			// If no middleware left, proceeds for main route
 			return $route($request, $response);
 		};
+		
+		$finalResponse = $dispatcher();
 
-		return $dispatcher();
+		return $finalResponse;
 	}
 
 

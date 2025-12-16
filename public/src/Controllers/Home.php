@@ -3,15 +3,16 @@
 require constant('ABSPATH').'/src/Models/Users.php';
 
 use GioPHP\Attributes\Route;
+use GioPHP\Http\Response;
 
 class Home
 {
 	#[Route(
 		method: 'GET',
 		path: '/public/',
-		description: 'Home page.'
+		description: 'Home page'
 	)]
-	public function index ($req, $res)
+	public function index ($req, $res): Response
 	{
 		$viewData = [
 			'title' => 'Home'
@@ -23,9 +24,9 @@ class Home
 	#[Route(
 		method: 'GET',
 		path: '/public/database',
-		description: 'Database test page.'
+		description: 'Database test page'
 	)]
-	public function db ($req, $res): void
+	public function db ($req, $res): Response
 	{
 		$viewData = [
 			'title' => 'Db'
@@ -45,36 +46,22 @@ class Home
 	#[Route(
 		method: 'GET',
 		path: '/public/upload',
-		description: 'File upload page.'
+		description: 'File upload page'
 	)]
-	public function indexUpload ($req, $res): void
+	public function indexUpload ($req, $res): Response
 	{
-		$res->status(200)->render('FileUpload', '_layout', [ 'title' => 'Upload' ]);
-	}
-
-	#[Route(
-		method: 'GET',
-		path: '/public/query',
-		description: 'Schema query test page.',
-		schema: [ 'id' => 'query:int', 'name' => 'query:string' ]
-	)]
-	public function schemaQuery ($req, $res): void
-	{
-		$res->status(200)->html("
-			<h1>ID: {$req->query?->id}</h1>
-			<h1>Name: {$req->query?->name}</h1>
-		");
+		return $res->status(200)->render('FileUpload', '_layout', [ 'title' => 'Upload' ]);
 	}
 
 	#[Route(
 		method: 'GET',
 		path: '/public/404',
-		description: 'Default not found page.',
+		description: 'Default not found page',
 		isFallbackRoute: true
 	)]
-	public function notFound ($req, $res)
-	{
-		$res->status(404)->html("<h1>Not Found</h1>");
+	public function notFound ($req, $res): Response
+	{	
+		return $res->status(404)->html("<h1>Not Found</h1>");
 	}
 }
 

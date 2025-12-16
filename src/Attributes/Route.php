@@ -10,7 +10,6 @@ class Route
     public function __construct(
 		public string $method = '',
 		public string $path = '',
-        public array $schema = [],
 		public array $middlewares = [],
 		public string $description = '',
 		public bool $isFallbackRoute = false,

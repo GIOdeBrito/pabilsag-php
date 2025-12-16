@@ -41,7 +41,6 @@ class Router
 			$controllerRoute->method = $schema->method;
 			$controllerRoute->path = $schema->path;
 			$controllerRoute->description = $schema->description;
-			$controllerRoute->schema = $schema->schema;
 			$controllerRoute->middlewares = $schema->middlewares;
 			$controllerRoute->controller = [$controller, $schema->functionName];
 
@@ -57,39 +56,40 @@ class Router
 
 	public function call (Request $request): Response
 	{
-		$requestMethod = $request->getMethod();
-		$requestUri = $request->getUri();
-
-		if(!array_key_exists($requestUri, $this->routes[$requestMethod]))
-		{
-			$res->redirect($this->notFoundPage);
-		}
-
-		$route = $this->routes[$requestMethod][$requestUri];
-
-		// Get the route schema i.e. the expected variables
-		//$request->getSchema($route->schema);
-
-		// Instantiates the route controller
-		$controller = $this->container->make($route->getController());
-
 		$response = new Response(
 			$this->container->make(Loader::class),
 			$this->container->make(Logger::class),
 			$this->container->make(ComponentRegistry::class)
 		);
+		
+		$requestMethod = $request->getMethod();
+		$requestUri = $request->getUri();
+		
+		// Redirect to not found page
+		if(!array_key_exists($requestUri, $this->routes[$requestMethod]))
+		{
+			return $response->redirect($this->notFoundPage);
+		}
+
+		$route = $this->routes[$requestMethod][$requestUri];
 
 		// Self-contained route enqueued for the pipeline
-		$routeQueued = function ($request, $response) use ($route, $controller) {
-
-			return $controller->{$route->getControllerMethod()}($request, $response);
+		$routeQueued = function ($request, $response) use ($route): Response {
+			
+			// Instantiates the route controller
+			$controller = $this->container->make($route->getController());
+			
+			// Calls controller selected method
+			$controllerResponse = $controller->{$route->getControllerMethod()}($request, $response);
+			
+			return $controllerResponse;
 		};
 
 		// Add route-specific middlewares to the pipeline
 		$this->container->make(MiddlewarePipeline::class)->addMultiple($route->middlewares);
 
 		// Execute middleware pipeline before controller
-		$response = $this->container->make(MiddlewarePipeline::class)->handle($request, $response, $routeQueued);
+		$this->container->make(MiddlewarePipeline::class)->handle($request, $response, $routeQueued);
 
 		return $response;
 	}

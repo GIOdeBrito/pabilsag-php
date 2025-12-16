@@ -7,8 +7,7 @@ class ApiController
 	#[Route(
 		method: 'POST',
 		path: '/public/api/v1/schema',
-		description: 'Schema JSON test page.',
-		schema: [ 'id' => 'json:int', 'name' => 'json:string' ]
+		description: 'Schema JSON test page.'
 	)]
 	public function schema ($req, $res): void
 	{
@@ -19,8 +18,7 @@ class ApiController
 	#[Route(
 		method: 'POST',
 		path: '/public/api/v1/fileschema',
-		description: 'Schema file upload endpoint.',
-		schema: [ 'annex' => 'file:jpg|jpeg|png[]' ]
+		description: 'Schema file upload endpoint.'
 	)]
 	public function schemaFile ($req, $res): void
 	{
@@ -50,8 +48,7 @@ class ApiController
 	#[Route(
 		method: 'POST',
 		path: '/public/api/v1/jsondump',
-		description: 'JSON dump',
-		schema: [ 'content' => 'json:object' ]
+		description: 'JSON dump'
 	)]
 	public function jsonDump ($req, $res): void
 	{

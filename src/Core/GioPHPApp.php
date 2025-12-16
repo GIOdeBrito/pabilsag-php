@@ -104,7 +104,7 @@ class GioPHPApp
 		$response = $router->call($request);
 
 		// Send stuff to browser
-		//$response->send();
+		$response->send();
 	}
 }
 
