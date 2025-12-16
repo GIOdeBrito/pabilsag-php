@@ -23,8 +23,6 @@ class DIController
 	)]
 	public function DITest ($req, $res): Response
 	{
-		//var_dump($this->logger);
-
 		$this->logger->info("Logger created from the dependency injection container!");
 
 		return $res->status(200)->html('<p>Check the log output.</p>');

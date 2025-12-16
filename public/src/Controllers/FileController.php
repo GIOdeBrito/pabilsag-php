@@ -13,7 +13,7 @@ class FileController
 	)]
 	public function fileDownload ($req, $res): void
 	{
-		$path = constant('ABSPATH').'/assets/hipopotamo.jpg';
+		$path = ABSPATH.'/assets/hipopotamo.jpg';
 
 		if(!file_exists($path))
 		{
@@ -30,7 +30,7 @@ class FileController
 	)]
 	public function fileDisplay ($req, $res): void
 	{
-		$path = constant('ABSPATH').'/assets/hipopotamo.jpg';
+		$path = ABSPATH.'/assets/hipopotamo.jpg';
 
 		if(!file_exists($path))
 		{
@@ -47,7 +47,7 @@ class FileController
 	)]
 	public function fileBase64 ($req, $res): void
 	{
-		$path = constant('ABSPATH').'/assets/hipopotamo.jpg';
+		$path = ABSPATH.'/assets/hipopotamo.jpg';
 
 		if(!file_exists($path))
 		{

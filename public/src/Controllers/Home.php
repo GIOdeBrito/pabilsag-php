@@ -1,6 +1,6 @@
 <?php
 
-require constant('ABSPATH').'/src/Models/Users.php';
+require ABSPATH.'/src/Models/Users.php';
 
 use GioPHP\Attributes\Route;
 use GioPHP\Http\Response;
@@ -18,11 +18,9 @@ class Home
 			'title' => 'Home'
 		];
 		
-		//var_dump($req->getQuery());
-
 		return $res->status(200)->render('Home', '_layout', $viewData);
 	}
-
+	
 	#[Route(
 		method: 'GET',
 		path: '/public/database',
@@ -33,18 +31,18 @@ class Home
 		$viewData = [
 			'title' => 'Db'
 		];
-
+		
 		$db = $this->getDatabase();
 		$db->open();
 		//$db->exec("INSERT INTO USERS VALUES (:idd, :name, :num)", [ 'idd' => 2, 'name' => 'BRUNO', 'num' => 123 ]);
 		$res = $db->query("SELECT * FROM USERS");
-
+		
 		var_dump($res);
 		die();
-
+		
 		$res->status(200)->render('Home', '_layout', $viewData);
 	}
-
+	
 	#[Route(
 		method: 'GET',
 		path: '/public/upload',
@@ -54,7 +52,7 @@ class Home
 	{
 		return $res->status(200)->render('FileUpload', '_layout', [ 'title' => 'Upload' ]);
 	}
-
+	
 	#[Route(
 		method: 'GET',
 		path: '/public/404',

@@ -2,14 +2,15 @@
 
 use GioPHP\Attributes\Route;
 use GioPHP\Web\CurlClient;
+use GioPHP\Http\Response;
 
 class WebController
 {
 	private ?CurlClient $curl = NULL;
 
-	public function __construct ()
+	public function __construct (CurlClient $client)
 	{
-		$this->curl = new CurlClient();
+		$this->curl = $client;
 	}
 
 	#[Route(
@@ -17,12 +18,12 @@ class WebController
 		path: '/public/web/curl',
 		description: 'Testing the CurlClient.'
 	)]
-	public function curlTest ($req, $res): void
+	public function curlTest ($req, $res): Response
 	{
 		$curl = $this->curl;
 		$response = $curl->get()->url('https://www.pudim.com.br')->send();
 
-		$res->status(200)->html($response);
+		return $res->status(200)->html($response);
 	}
 
 	#[Route(
@@ -30,7 +31,7 @@ class WebController
 		path: '/public/web/curlqp',
 		description: 'Curl request with query parameters.'
 	)]
-	public function curlQP ($req, $res): void
+	public function curlQP ($req, $res): Response
 	{
 		$curl = $this->curl;
 		$response = $curl
@@ -39,7 +40,7 @@ class WebController
 			->setQuery([ 'origin' => 'GioPHP\\CurlClient', 'date' => date('Y-m-d H:i:s') ])
 			->send();
 
-		$res->status(200)->json($response);
+		return $res->status(200)->json($response);
 	}
 }
 

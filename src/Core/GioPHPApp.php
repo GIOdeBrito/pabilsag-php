@@ -17,6 +17,7 @@ use GioPHP\Services\{
 	MiddlewarePipeline,
 	DIContainer
 };
+use GioPHP\Web\CurlClient;
 use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
 use GioPHP\Database\Db as Database;
@@ -32,6 +33,7 @@ class GioPHPApp
 		$this->container = $container;
 
 		$container->bind(Logger::class, fn() => new Logger());
+		$container->bind(CurlClient::class, fn() => new CurlClient());
 
 		$container->bind(Request::class, fn() => new Request(
 			$_SERVER,
