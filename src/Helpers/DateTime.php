@@ -1,8 +1,8 @@
 <?php
 
-namespace GioPHP\Helpers;
+namespace GioPHP\Helpers\DateTime;
 
-function toDateTime (?string $date, string $format = 'Y-m-d'): DateTimeImmutable|null
+function to_date_time (?string $date, string $format = 'Y-m-d'): DateTimeImmutable|null
 {
 	if(is_null($date) || empty($date))
     {

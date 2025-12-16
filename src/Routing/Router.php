@@ -4,17 +4,15 @@ namespace GioPHP\Routing;
 
 use GioPHP\Http\{ Request, Response };
 use GioPHP\Services\{ Loader, Logger, ComponentRegistry, MiddlewarePipeline, DIContainer };
-use GioPHP\Database\Db;
 use GioPHP\Routing\ControllerRoute;
 use GioPHP\Enums\HttpMethod;
 
-use function GioPHP\Helpers\getControllerSchemas;
+use function GioPHP\Helpers\RouteAttributes\get_controller_schemas;
 
 class Router
 {
 	private array $routes = [];
 	private array $controllers = [];
-
 	private string $notFoundPage = "";
 
 	private DIContainer $container;
@@ -33,7 +31,7 @@ class Router
 
 	public function addController (string $controller): void
 	{
-		$schemas = getControllerSchemas($controller);
+		$schemas = get_controller_schemas($controller);
 
 		foreach($schemas as $schema):
 
@@ -89,9 +87,9 @@ class Router
 		$this->container->make(MiddlewarePipeline::class)->addMultiple($route->middlewares);
 
 		// Execute middleware pipeline before controller
-		$this->container->make(MiddlewarePipeline::class)->handle($request, $response, $routeQueued);
+		$middlewareResponse = $this->container->make(MiddlewarePipeline::class)->handle($request, $response, $routeQueued);
 
-		return $response;
+		return $middlewareResponse;
 	}
 }
 

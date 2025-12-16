@@ -4,9 +4,9 @@ namespace GioPHP\Core;
 
 define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
 
-require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/DateTime.php';
-require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/RouteAttributes.php';
-require_once constant('GIOPHP_SRC_ROOT_PATH').'/Helpers/Types.php';
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Types.php';
 
 use GioPHP\Http\Request;
 use GioPHP\Routing\Router;
@@ -20,17 +20,19 @@ use GioPHP\Services\{
 use GioPHP\Web\CurlClient;
 use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
-use GioPHP\Database\Db as Database;
+use GioPHP\Database\Database;
 
-class GioPHPApp
+class Application
 {
-	private ?DIContainer $container = NULL;
-	private ?ErrorHandler $errorHandler = NULL;
+	private DIContainer $container;
+	private ErrorHandler $errHandler;
 
 	public function __construct ()
 	{
 		$container = new DIContainer();
 		$this->container = $container;
+		
+		$this->errHandler = new ErrorHandler($container->make(Logger::class));
 
 		$container->bind(Logger::class, fn() => new Logger());
 		$container->bind(CurlClient::class, fn() => new CurlClient());
@@ -39,7 +41,7 @@ class GioPHPApp
 			$_SERVER,
 			$_GET,
 			$_POST,
-			[],
+			$_COOKIE,
 			file_get_contents('php://input')
 		));
 
@@ -56,8 +58,6 @@ class GioPHPApp
 		$container->singleton(MiddlewarePipeline::class, fn($container) => new MiddlewarePipeline($container));
 
 		$container->singleton(Router::class, fn($container) => new Router($container));
-
-		$this->errorHandler = new ErrorHandler($container->make(Logger::class));
 	}
 
 	public function logger (): object
@@ -93,7 +93,7 @@ class GioPHPApp
 
 	public function error (): ErrorHandler
 	{
-		return $this->errorHandler;
+		return $this->errHandler;
 	}
 
 	public function run (): void

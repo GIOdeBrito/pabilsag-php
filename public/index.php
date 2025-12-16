@@ -5,8 +5,20 @@ date_default_timezone_set('America/Fortaleza');
 
 require __DIR__.'/../vendor/autoload.php';
 
-use GioPHP\Core\GioPHPApp as App;
+use GioPHP\Core\Application as App;
 
+$app = new App();
+
+$app->loader()->setViewDirectory(ABSPATH."/src/Views");
+
+$app->error()->useErrorLogging();
+$app->error()->setErrorCallback(function ($message)
+{
+	echo "<h1>Uh-oh. There was an error!</h1>";
+	echo "<p>{$message}</p>";
+});
+
+// Import controller classes
 require 'src/Controllers/Home.php';
 require 'src/Controllers/FileController.php';
 require 'src/Controllers/ApiController.php';
@@ -16,15 +28,6 @@ require 'src/Controllers/DIController.php';
 
 // For dependency injection
 require 'src/DependencyInjection/SessionManager.php';
-
-$app = new App();
-
-$app->loader()->setViewDirectory(ABSPATH."/src/Views");
-$app->error()->setErrorCallback(function ($message)
-{
-	echo "<h1>Uh-oh. There was an error!</h1>";
-	echo "<p>{$message}</p>";
-});
 
 // Controllers registered on router
 $app->router()->addController(Home::class);
@@ -36,9 +39,9 @@ $app->router()->addController(DIController::class);
 
 // Component use and import
 $app->components()->useComponents(true);
-$app->components()->import(include constant('ABSPATH').'/src/Components/ButtonIcon/button-icon.php');
+$app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
 
-// Dependency injection bind
+// Bind service for injection
 $app->container()->bind(SessionManager::class, fn($container) => new SessionManager(
 	$container->make(GioPHP\Services\Logger::class)
 ));

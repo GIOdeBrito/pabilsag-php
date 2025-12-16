@@ -5,7 +5,7 @@ namespace GioPHP\Database;
 use GioPHP\Services\Loader;
 use GioPHP\Services\Logger;
 
-class Db
+class Database
 {
 	private ?\PDO $pdo = NULL;
 	private Loader $loader;

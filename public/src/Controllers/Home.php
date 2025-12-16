@@ -1,7 +1,5 @@
 <?php
 
-require ABSPATH.'/src/Models/Users.php';
-
 use GioPHP\Attributes\Route;
 use GioPHP\Http\Response;
 

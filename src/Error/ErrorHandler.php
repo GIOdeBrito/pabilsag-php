@@ -13,45 +13,44 @@ final class ErrorHandler
 	public function __construct (Logger $logger)
 	{
 		$this->logger = $logger;
-
+	}
+	
+	public function useErrorLogging (): void
+	{
 		// Do not allow errors to be written on the HTML document
 		ini_set('display_errors', '0');
 		error_reporting(E_ALL);
 
-		$this->initErrorHandler();
-		$this->initShutdownHandler();
+		$this->createErrorAndShutdownRules();
 
-		$this->shutdownHandler = function ()
-		{
+		$this->shutdownHandler = function (): void {
+			
 			echo file_get_contents(constant('GIOPHP_SRC_ROOT_PATH').'/Template/InternalError.php');
 		};
 	}
 
-	public function setErrorCallback (callable $func)
+	public function setErrorCallback (callable $func): void
 	{
 		$this->shutdownHandler = $func;
 	}
-
-	private function initErrorHandler (): void
+	
+	private function createErrorAndShutdownRules (): void
 	{
+		$foutput = fn($message, $file, $line) => "GioPHP ERROR -> {$message}. File: {$file}. Line: {$line}";
+		
 		// Convert errors into exceptions
-		set_error_handler(function ($severity, $message, $file, $line)
+		set_error_handler(function ($severity, $message, $file, $line) use ($foutput)
 		{
 			if (!(error_reporting() & $severity)) {
 				return;
 			}
 
-			$output = "GioPHP ERROR -> {$message}. File: {$file}. Line: {$line}";
-
-			$this->logger->error($output);
+			$this->logger->error($foutput($message, $file, $line));
 
 			throw new \ErrorException($message, 0, $severity, $file, $line);
 		});
-	}
-
-	private function initShutdownHandler (): void
-	{
-		register_shutdown_function(function ()
+		
+		register_shutdown_function(function () use ($foutput)
 		{
 			$error = error_get_last();
 
@@ -64,9 +63,7 @@ final class ErrorHandler
 			$line = $error['line'];
 			$message = $error['message'];
 
-			$output = "GioPHP ERROR -> {$message}. File: {$file}. Line: {$line}";
-
-			$this->logger->error($output);
+			$this->logger->error($foutput($message, $file, $line));
 
 			call_user_func_array($this->shutdownHandler, [ $message, $file, $line ]);
 			die();

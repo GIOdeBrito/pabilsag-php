@@ -17,6 +17,8 @@ class AuthMiddleware implements Middleware
 		if(!isset($req->body->authBasic))
 		{
 			$this->logger->info("Request does not contain basic auth");
+			
+			return $res->status(500)->html("<p>Missing basic auth</p>");
 		}
 		
 		$response = $next($req, $res);

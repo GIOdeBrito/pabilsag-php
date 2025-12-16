@@ -1,8 +1,8 @@
 <?php
 
-namespace GioPHP\Helpers;
+namespace GioPHP\Helpers\RouteAttributes;
 
-function getControllerSchemas (string $controller): array
+function get_controller_schemas (string $controller): array
 {
 	$reflect = new \ReflectionClass($controller);
 	$routeAttributes = [];
@@ -28,21 +28,6 @@ function getControllerSchemas (string $controller): array
 	endforeach;
 
 	return $routeAttributes;
-}
-
-function getSchemaMethod (string $type): string
-{
-	return mb_strtolower(explode(':', $type)[0], 'UTF-8');
-}
-
-function getSchemaTypes (string $schema): array
-{
-	$schemaMethod = getSchemaMethod($schema);
-
-	$names = str_replace("{$schemaMethod}:", '', $schema);
-	$namesNoMultiple = str_replace('[]', '', $names);
-
-	return explode('|', $namesNoMultiple);
 }
 
 ?>

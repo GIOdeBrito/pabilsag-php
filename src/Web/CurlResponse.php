@@ -2,7 +2,7 @@
 
 namespace GioPHP\Web;
 
-use function GioPHP\Helpers\jsonValidate;
+use function GioPHP\Helpers\Types\json_validator;
 
 final class CurlResponse
 {
@@ -25,9 +25,11 @@ final class CurlResponse
 
 	public function isJson (): bool
 	{
+		// If php 8.3's json_validate does not exist
+		// then use the polyfill function instead
 		if(!function_exists('json_validate'))
 		{
-			return jsonValidate($this->rawResponse);
+			return json_validator($this->rawResponse);
 		}
 
 		return json_validate($this->rawResponse);
