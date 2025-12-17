@@ -13,8 +13,8 @@ class Request
 	
 	public function __construct ($server, $get, $postdata, $cookies, $body)
 	{
-		$this->method = mb_strtoupper($server["REQUEST_METHOD"]);
-		$this->uri = parse_url($server["REQUEST_URI"], PHP_URL_PATH);
+		$this->method = mb_strtoupper($_SERVER["REQUEST_METHOD"]);
+		$this->uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 		$this->query = $get;
 		$this->postdata = $postdata;
 		$this->headers = $server;
@@ -31,9 +31,14 @@ class Request
 		return $this->uri;
 	}
 	
+	public function getHeaders (): array
+	{
+		return $this->headers;
+	}
+	
 	public function getBody (): object
 	{
-		return json_decode($this->body);
+		return json_decode($this->body) ?? (object) [];
 	}
 	
 	public function getBodyAsString (): string

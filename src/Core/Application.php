@@ -4,9 +4,11 @@ namespace GioPHP\Core;
 
 define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
 
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/GQL.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Json.php';
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Http.php';
 
 use GioPHP\Http\Request;
 use GioPHP\Routing\Router;
@@ -21,6 +23,8 @@ use GioPHP\Web\CurlClient;
 use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
 use GioPHP\Database\Database;
+
+use function GioPHP\Helpers\Http\get_request_headers;
 
 class Application
 {
@@ -38,7 +42,7 @@ class Application
 		$container->bind(CurlClient::class, fn() => new CurlClient());
 
 		$container->bind(Request::class, fn() => new Request(
-			$_SERVER,
+			get_request_headers(),
 			$_GET,
 			$_POST,
 			$_COOKIE,

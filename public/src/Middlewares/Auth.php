@@ -14,11 +14,14 @@ class AuthMiddleware implements Middleware
 	
 	public function handle ($req, $res, callable $next)
 	{
-		if(!isset($req->body->authBasic))
+		if(!isset($req->getForm()->usr))
 		{
-			$this->logger->info("Request does not contain basic auth");
+			$this->logger->error("Request does not contain basic auth");
 			
-			return $res->status(500)->html("<p>Missing basic auth</p>");
+			return $res->status(500)->json([
+				'message' => 'Missing basic auth',
+				'status' => 500
+			]);
 		}
 		
 		$response = $next($req, $res);
