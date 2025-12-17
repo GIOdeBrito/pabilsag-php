@@ -11,7 +11,7 @@ $app = new App();
 
 $app->loader()->setViewDirectory(ABSPATH."/src/Views");
 
-$app->error()->useErrorLogging();
+$app->error()->useLogging();
 $app->error()->setErrorCallback(function ($message)
 {
 	echo "<h1>Uh-oh. There was an error!</h1>";

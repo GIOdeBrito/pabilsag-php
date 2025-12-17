@@ -6,7 +6,7 @@ define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
 
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Types.php';
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Json.php';
 
 use GioPHP\Http\Request;
 use GioPHP\Routing\Router;

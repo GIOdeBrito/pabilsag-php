@@ -7,7 +7,7 @@ use GioPHP\Services\Logger;
 final class ErrorHandler
 {
 	private \Closure $shutdownHandler;
-
+	
 	private Logger $logger;
 
 	public function __construct (Logger $logger)
@@ -15,7 +15,7 @@ final class ErrorHandler
 		$this->logger = $logger;
 	}
 	
-	public function useErrorLogging (): void
+	public function useLogging (): void
 	{
 		// Do not allow errors to be written on the HTML document
 		ini_set('display_errors', '0');
@@ -36,7 +36,7 @@ final class ErrorHandler
 	
 	private function createErrorAndShutdownRules (): void
 	{
-		$foutput = fn($message, $file, $line) => "GioPHP ERROR -> {$message}. File: {$file}. Line: {$line}";
+		$foutput = fn($message, $file, $line) => "GioPHP ERROR -> {$message} | File: {$file} | Line: {$line}";
 		
 		// Convert errors into exceptions
 		set_error_handler(function ($severity, $message, $file, $line) use ($foutput)
@@ -60,11 +60,24 @@ final class ErrorHandler
 			}
 
 			$file = $error['file'];
-			$line = $error['line'];
+			$line = strval($error['line']);
 			$message = $error['message'];
 
 			$this->logger->error($foutput($message, $file, $line));
 
+			call_user_func_array($this->shutdownHandler, [ $message, $file, $line ]);
+			die();
+		});
+		
+		// For uncaught exceptions
+		set_exception_handler(function (\Throwable $ex) use ($foutput) {
+			
+			$message = $ex->getMessage();
+			$file = $ex->getFile();
+			$line = strval($ex->getLine());
+			
+			$this->logger->error($foutput($message, $file, $line));
+			
 			call_user_func_array($this->shutdownHandler, [ $message, $file, $line ]);
 			die();
 		});

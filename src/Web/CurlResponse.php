@@ -2,7 +2,7 @@
 
 namespace GioPHP\Web;
 
-use function GioPHP\Helpers\Types\json_validator;
+use function GioPHP\Helpers\Json\json_validator;
 
 final class CurlResponse
 {
