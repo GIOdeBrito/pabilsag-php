@@ -15,7 +15,7 @@ class ComponentRegistry
 		$this->logger = $logger;
 	}
 
-	public function useComponents ($value): void
+	public function useComponents (bool $value): void
 	{
 		$this->useComponents = $value;
 	}

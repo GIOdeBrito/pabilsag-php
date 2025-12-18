@@ -71,7 +71,7 @@ class ViewRenderer
 		$this->htmlContent = $parser->domToHTML();
 	}
 
-	public function createElement ($node, $componentClass)
+	public function createElement ($node, $componentClass): string
 	{
 		$attr = DOMParser::getNodeAttributes($node, 'g:');
 

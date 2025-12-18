@@ -28,6 +28,6 @@ function get_controller_schemas (string $controller): array
 	endforeach;
 
 	return $routeAttributes;
-}
+}z
 
 ?>

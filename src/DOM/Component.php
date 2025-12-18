@@ -2,7 +2,9 @@
 
 namespace GioPHP\DOM;
 
-class Component
+use GioPHP\Interfaces\ComponentInterface;
+
+class Component implements ComponentInterface
 {
 	private string $tag;
 	private mixed $template;
@@ -15,7 +17,7 @@ class Component
 		$this->params = $params ?? [];
 	}
 
-	public function render ($attrs = []): void
+	public function render (array $attrs = []): void
 	{
 		// Get the intersecting attributes to turn into single variables
 		$difference = array_intersect($this->params, array_keys($attrs));
@@ -49,7 +51,7 @@ class Component
 		return $this->tag;
 	}
 
-	private function getAttributesAsPropertyString ($kvp = []): string
+	private function getAttributesAsPropertyString (array $kvp = []): string
 	{
 		$properties = [];
 

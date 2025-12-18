@@ -35,12 +35,13 @@ class Router
 
 		foreach($schemas as $schema):
 
-			$controllerRoute = new ControllerRoute();
-			$controllerRoute->method = $schema->method;
-			$controllerRoute->path = $schema->path;
-			$controllerRoute->description = $schema->description;
-			$controllerRoute->middlewares = $schema->middlewares;
-			$controllerRoute->controller = [$controller, $schema->functionName];
+			$controllerRoute = new ControllerRoute(
+				method: $schema->method,
+				path: $schema->path,
+				description: $schema->description,
+				middlewares: $schema->middlewares,
+				controller: [$controller, $schema->functionName]
+			);
 
 			if($schema->isFallbackRoute)
 			{
