@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+namespace GioPHP\Helpers\Polyfill;
 
 // Sort of polyfill for PHP's 8.3 'json_validate' function
 function json_validator (string $data): bool
@@ -13,9 +15,21 @@ function json_validator (string $data): bool
 	return false;
 }
 
-function garray_find ()
+// Polyfill for the array_find function
+function garray_find (array $arr, callable $predicate): mixed
 {
-	
+    foreach($arr as $key => $value):
+
+        $result = $predicate($value, $key);
+
+        if($result)
+        {
+            return $value;
+        }
+
+    endforeach;
+
+    return NULL;
 }
 
 ?>
