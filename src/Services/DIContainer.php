@@ -2,8 +2,7 @@
 
 namespace GioPHP\Services;
 
-/* Dependency injection container */
-
+// Dependency injection container 
 final class DIContainer
 {
 	private array $singleton = [];

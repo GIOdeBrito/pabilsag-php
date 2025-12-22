@@ -3,18 +3,19 @@
 namespace GioPHP\DOM;
 
 use GioPHP\Interfaces\ComponentInterface;
+use function GioPHP\Helpers\String\normalize_whitespace;
 
 class Component implements ComponentInterface
 {
 	private string $tag;
-	private mixed $template;
+	private string $template;
 	private array $params;
 
-	public function __construct (string $tag, mixed $template, array $params = NULL)
+	public function __construct (string $tag, string $template, array $params = [])
 	{
 		$this->tag = $tag;
 		$this->template = $template;
-		$this->params = $params ?? [];
+		$this->params = $params;
 	}
 
 	public function render (array $attrs = []): void
@@ -36,19 +37,32 @@ class Component implements ComponentInterface
 		$templateVars = array_merge(array_fill_keys($differenceNonAssigned, NULL), $templateVars);
 		// Attach the generic attribute chain string to the array
 		$templateVars['attributes'] = $this->getAttributesAsPropertyString($attrs);
-
-		// Extract them as scope variables
-		extract($templateVars);
-
-		if(gettype($this->template) === 'string')
+		
+		// Checks if the string is a path that points to a file on disk
+		if(file_exists($this->template))
 		{
+			// Extract them as scope variables
+			extract($templateVars);
+			
 			include $this->template;
+			
+			return;
 		}
+		
+		$fHTML = $this->formatHTMLDocString($this->template, $templateVars);
+			
+		// If not then it must be a pure HTML string
+		echo $fHTML;
 	}
 
 	public function getTagName (): string
 	{
 		return $this->tag;
+	}
+	
+	public function getTemplatePath (): string
+	{
+		return $this->template;
 	}
 
 	private function getAttributesAsPropertyString (array $kvp = []): string
@@ -61,6 +75,42 @@ class Component implements ComponentInterface
 		});
 
 		return implode(' ', $properties);
+	}
+	
+	private function formatHTMLDocString (string $content, array $params = []): string
+	{
+		$parsedString = $content;
+		
+		$offset_search = -1;
+		
+		for(;;):
+		
+			$offset_search = strpos($parsedString, '{{', $offset_search + 1);
+			
+			if($offset_search === false)
+			{
+				break;
+			}
+			
+			$offset_end = strpos($parsedString, '}}', $offset_search);
+			
+			$matchedParam = substr($parsedString, $offset_search, $offset_end - $offset_search + 2);
+			$normalizedMatchParam = normalize_whitespace($matchedParam);
+			
+			$paramValue = \array_find($params, fn($value, $key) => normalize_whitespace("{{@ {$key} }}") === $normalizedMatchParam);
+			
+			$paramReplacementValue = '';
+			
+			if(!is_null($paramValue))
+			{
+				$paramReplacementValue = $paramValue;
+			}
+			
+			$parsedString = str_replace($matchedParam, $paramReplacementValue, $parsedString);
+			
+		endfor;
+		
+		return $parsedString;
 	}
 }
 

@@ -3,12 +3,13 @@
 namespace GioPHP\Services;
 
 use GioPHP\Services\Logger;
+use GioPHP\Interfaces\ComponentInterface;
 
-class ComponentRegistry
+class ComponentService
 {
 	private bool $useComponents = false;
 	private array $registeredComponents = [];
-	private ?Logger $logger = NULL;
+	private Logger $logger;
 
 	public function __construct (Logger $logger)
 	{
@@ -24,8 +25,9 @@ class ComponentRegistry
 	{
 		return $this->useComponents;
 	}
-
-	/*public function register (string $tagName, string|array|object $callback): void
+	
+	#[Deprecated(reason: "Use import() instead")]
+	public function register (string $tagName, string|array|object $callback): void
 	{
 		// Checks if the tag already exists or if the function is callable
 		if(array_key_exists($tagName, $this->registeredComponents) || !is_callable($callback))
@@ -34,11 +36,17 @@ class ComponentRegistry
         }
 
 		$this->registeredComponents[$tagName] = $callback;
-	}*/
+	}
 
-	public function import (object $component): void
+	public function import (ComponentInterface $component): void
 	{
-		$tagName = $component?->getTagName() ?? NULL;
+		$tagName = $component->getTagName();
+		
+		if(is_null($tagName))
+		{
+			$this->logger->error("Component is missing a proper tag defintion: {$component->getTemplatePath()}");
+			throw new \Exception("Component's tag name cannot be empty!");
+		}
 
 		$this->registeredComponents[$tagName] = $component;
 	}

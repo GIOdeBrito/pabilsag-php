@@ -5,16 +5,16 @@
 namespace GioPHP\View;
 
 use GioPHP\DOM\DOMParser;
-use GioPHP\Services\ComponentRegistry;
+use GioPHP\Services\ComponentService;
 
 class ViewRenderer
 {
 	private string $htmlContent = '';
 	private object $dom;
 
-	private ComponentRegistry $components;
+	private ComponentService $components;
 
-	public function __construct (ComponentRegistry $components)
+	public function __construct (ComponentService $components)
 	{
 		$this->components = $components;
 	}

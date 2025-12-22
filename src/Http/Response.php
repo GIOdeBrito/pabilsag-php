@@ -3,7 +3,7 @@
 namespace GioPHP\Http;
 
 use GioPHP\Enums\{ ResponseTypes, ContentType };
-use GioPHP\Services\{ Loader, Logger, ComponentRegistry };
+use GioPHP\Services\{ Loader, Logger, ComponentService };
 use GioPHP\View\ViewRenderer;
 use GioPHP\Interfaces\ResponseInterface;
 use GioPHP\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
@@ -13,10 +13,10 @@ class Response
 	private int $code = 200;
 	private Loader $loader;
 	private Logger $logger;
-	private ComponentRegistry $components;
+	private ComponentService $components;
 	private ResponseInterface $prepared;
 
-	public function __construct (Loader $loader, Logger $logger, ComponentRegistry $components)
+	public function __construct (Loader $loader, Logger $logger, ComponentService $components)
 	{
 		$this->loader = $loader;
 		$this->logger = $logger;

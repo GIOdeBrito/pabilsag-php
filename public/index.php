@@ -40,6 +40,7 @@ $app->router()->addController(DIController::class);
 // Component use and import
 $app->components()->useComponents(true);
 $app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
+$app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
 
 // Bind service for injection
 $app->container()->bind(SessionManager::class, fn($container) => new SessionManager(

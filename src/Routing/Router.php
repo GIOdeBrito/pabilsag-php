@@ -3,7 +3,7 @@
 namespace GioPHP\Routing;
 
 use GioPHP\Http\{ Request, Response };
-use GioPHP\Services\{ Loader, Logger, ComponentRegistry, MiddlewarePipeline, DIContainer };
+use GioPHP\Services\{ Loader, Logger, ComponentService, MiddlewarePipeline, DIContainer };
 use GioPHP\Routing\ControllerRoute;
 use GioPHP\Enums\HttpMethod;
 
@@ -58,7 +58,7 @@ class Router
 		$response = new Response(
 			$this->container->make(Loader::class),
 			$this->container->make(Logger::class),
-			$this->container->make(ComponentRegistry::class)
+			$this->container->make(ComponentService::class)
 		);
 		
 		$requestMethod = $request->getMethod();

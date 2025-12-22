@@ -4,7 +4,7 @@ namespace GioPHP\Core;
 
 define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
 
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/GQL.php';
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/String.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Json.php';
@@ -15,7 +15,7 @@ use GioPHP\Routing\Router;
 use GioPHP\Services\{
 	Loader,
 	Logger,
-	ComponentRegistry,
+	ComponentService,
 	MiddlewarePipeline,
 	DIContainer
 };
@@ -50,7 +50,7 @@ class Application
 		));
 
 		$container->singleton(Loader::class, fn() => new Loader());
-		$container->singleton(ComponentRegistry::class, fn($container) => new ComponentRegistry(
+		$container->singleton(ComponentService::class, fn($container) => new ComponentService(
 			$container->make(Logger::class)
 		));
 
@@ -81,7 +81,7 @@ class Application
 
 	public function components (): object
 	{
-		return $this->container->make(ComponentRegistry::class);;
+		return $this->container->make(ComponentService::class);;
 	}
 
 	public function use (Middleware $middleware): void
@@ -109,6 +109,8 @@ class Application
 
 		// Send stuff to browser
 		$response->send();
+		
+		die();
 	}
 }
 
