@@ -15,9 +15,10 @@ class DOMParser
 
 	private function stringToDOMDocument (string $html): object
 	{
-		$document = new \DOMDocument();
+		$document = new \DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
-        $document->loadHTML(mb_encode_numericentity($html, [0x80, 0x10FFFF, 0, ~0], 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		$document->loadHTML(mb_encode_numericentity($html, [0x80, 0x10FFFF, 0, ~0], 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		//$document->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
 
         return $document;
@@ -37,7 +38,7 @@ class DOMParser
 			return $node->firstChild->ownerDocument->saveXML($node->firstChild);
 		}
 
-		return $node->ownerDocument->saveXML($node);
+		return $node->ownerDocument->saveHTML($node);
 	}
 
 	public function domNodeInnerHtml (object $node): string

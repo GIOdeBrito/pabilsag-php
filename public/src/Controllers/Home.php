@@ -21,6 +21,20 @@ class Home
 	
 	#[Route(
 		method: 'GET',
+		path: '/public/utf8',
+		description: 'Home page'
+	)]
+	public function utf8View ($req, $res): Response
+	{
+		$viewData = [
+			'title' => 'UTF-8'
+		];
+		
+		return $res->status(200)->render('Utf8', '_layout', $viewData);
+	}
+	
+	#[Route(
+		method: 'GET',
 		path: '/public/database',
 		description: 'Database test page'
 	)]

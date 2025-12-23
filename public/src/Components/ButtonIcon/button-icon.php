@@ -7,7 +7,7 @@ return new Component(
 	tag: 'button-icon',
 	template: <<<HTML
 		<button id="{{ @id }}" {{ @attributes }}>
-			<img src="{{ @icon }}" alt="Icon">
+			<img width="14px" src="{{ @icon }}" alt="Icon">
 			{{ @value }}
 		</button>
 	HTML,
