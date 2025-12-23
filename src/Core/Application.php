@@ -7,6 +7,7 @@ define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/String.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
+require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Json.php';
 require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Http.php';
 

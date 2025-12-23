@@ -3,7 +3,9 @@
 namespace GioPHP\DOM;
 
 use GioPHP\Interfaces\ComponentInterface;
+
 use function GioPHP\Helpers\String\normalize_whitespace;
+use function GioPHP\Helpers\Polyfill\garray_find;
 
 class Component implements ComponentInterface
 {
@@ -84,9 +86,10 @@ class Component implements ComponentInterface
 		$offset_search = -1;
 		
 		for(;;):
-		
+			
 			$offset_search = strpos($parsedString, '{{', $offset_search + 1);
 			
+			// Halts the loop if no parameter slot is found 
 			if($offset_search === false)
 			{
 				break;
@@ -97,7 +100,10 @@ class Component implements ComponentInterface
 			$matchedParam = substr($parsedString, $offset_search, $offset_end - $offset_search + 2);
 			$normalizedMatchParam = normalize_whitespace($matchedParam);
 			
-			$paramValue = \array_find($params, fn($value, $key) => normalize_whitespace("{{@ {$key} }}") === $normalizedMatchParam);
+			// NOTE: Using a polyfill now, as the current
+			// environment does not support PHP 8.4's
+			// array_find().
+			$paramValue = garray_find($params, fn($value, $key) => "{{@{$key}}}" === $normalizedMatchParam);
 			
 			$paramReplacementValue = '';
 			
@@ -109,6 +115,9 @@ class Component implements ComponentInterface
 			$parsedString = str_replace($matchedParam, $paramReplacementValue, $parsedString);
 			
 		endfor;
+		
+		// Removes carriage returns and line breaks
+		$parsedString = str_replace([ "\r", "\n" ], '', $parsedString);
 		
 		return $parsedString;
 	}
