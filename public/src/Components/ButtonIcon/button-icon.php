@@ -2,10 +2,11 @@
 
 use GioPHP\DOM\Component;
 
+// Example use of heredoc
 return new Component(
 	tag: 'button-icon',
 	template: <<<HTML
-		<button {{@ id }} {{ @attributes }}>
+		<button id="{{ @id }}" {{ @attributes }}>
 			<img src="{{ @icon }}" alt="Icon">
 			{{ @value }}
 		</button>
