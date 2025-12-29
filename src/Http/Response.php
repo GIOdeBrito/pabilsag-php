@@ -31,35 +31,30 @@ class Response
 
 	public function render (string $view, string $layout = '_layout', array $params = []): Response
 	{
-		//$this->send(new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params));
 		$this->prepared = new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params);
 		return $this;
 	}
 
 	public function html (string $html): Response
 	{
-		//$this->send(new HtmlResponse(status: $this->code, html: $html));
 		$this->prepared = new HtmlResponse(status: $this->code, html: $html);
 		return $this;
 	}
 
 	public function json (array|object $data): Response
 	{
-		//$this->send(new JsonResponse(status: $this->code, body: $data));
 		$this->prepared = new JsonResponse(status: $this->code, body: $data);
 		return $this;
 	}
 
 	public function plain (string $text): Response
 	{
-		//$this->send(new PlainResponse(status: $this->code, text: $text));
 		$this->prepared = new PlainResponse(status: $this->code, text: $text);
 		return $this;
 	}
 
 	public function file (string $path, string $type = ContentType::FileStream, string $filename = ''): Response
 	{
-		//$this->send(new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename));
 		$this->prepared = new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename);
 		return $this;
 	}
@@ -104,7 +99,7 @@ class Response
 					$this->sendPlain($response->getText());
 					break;
 				default:
-					throw new \LogicException("Unknown response '{$response->getResponseType()}'.");
+					throw new \LogicException("Unknown response type '{$response->getResponseType()}'.");
 			}
 		}
 		catch(\Exception $ex)
