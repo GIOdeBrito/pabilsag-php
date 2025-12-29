@@ -3,35 +3,97 @@
 namespace GioPHP\Database;
 
 use GioPHP\Interfaces\DatabaseInterface;
+use GioPHP\Infrastructure\ConnectionFactory;
 
 class Database implements DatabaseInterface
 {
-	private \PDO $pdo;
+	private ConnectionFactory $factory;
+	private ?\PDO $pdo = NULL;
 	
-	public function __construct (
-		public string $dsn,
-		public string $user,
-		public string $pwd,
-		public array $options = []
-	) {
-		
+	public function __construct (ConnectionFactory $connectionFactory)
+	{
+		$this->factory = $connectionFactory;
 	}
 	
-	public function connect (): bool
+	public function connect (string $connectionName): void
 	{
-		$defaultSettings = [
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-		];
+		$pdo = $this->factory->get($connectionName);
 		
-		$this->pdo = new PDO(
-			$this->dsn,
-			$this->user,
-			$this->pwd,
-			$this->options + $defaultSettings,
-		);
-		
-		
+		$this->pdo = $pdo;
+	}
+	
+	public function query (string $sql, array $params = [], bool $isObject = false): array|object
+	{
+		$res = $this->pdo->prepare($sql);
+
+		// Set param binds
+		if(count($params) > 0)
+		{
+			$this->setPDOBinds($res, $params);
+		}
+
+		$res->execute();
+
+		// Return data as objects
+		if($isObject)
+		{
+			return $res->fetchAll(\PDO::FETCH_OBJ);
+		}
+
+		// Return data as associative array
+		return $res->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
+	public function execute (string $sql, array $params = []): bool
+	{
+		$res = $this->pdo->prepare($sql);
+
+		$this->pdo->beginTransaction();
+
+		// Set param binds
+		if(count($params) > 0)
+		{
+			$this->setPDOBinds($res, $params);
+		}
+
+		$result = $res->execute();
+
+		return $result;
+	}
+	
+	public function commit(): void
+	{
+		$this->pdo->commit();
+	}
+	
+	public function rollback(): void
+	{
+		$this->pdo->rollBack();
+	}
+	
+	private function setPDOBinds (\PDOStatement $statement, array $params): void
+	{
+		// Sequential bindings
+		if(array_is_list($params))
+		{
+			foreach($params as $i => $value)
+			{
+				$statement->bindValue($i + 1, $value);
+			}
+
+			return;
+		}
+
+		// Associative bindings
+		foreach($params as $key => $value)
+		{
+			if(!str_starts_with($key, ':'))
+			{
+				$key = ':'.$key;
+			}
+
+			$statement->bindValue($key, $value);
+		}
 	}
 }
 

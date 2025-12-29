@@ -20,6 +20,7 @@ use GioPHP\Services\{
 	MiddlewarePipeline,
 	DIContainer
 };
+use GioPHP\Infrastructure\ConnectionFactory;
 use GioPHP\Web\CurlClient;
 use GioPHP\Interfaces\Middleware;
 use GioPHP\Error\ErrorHandler;
@@ -49,25 +50,26 @@ class Application
 			$_COOKIE,
 			file_get_contents('php://input')
 		));
+		
+		$container->bind(Database::class, fn($container) => new Database(
+			$container->make(ConnectionFactory::class)
+		));
 
 		$container->singleton(Loader::class, fn() => new Loader());
 		$container->singleton(ComponentService::class, fn($container) => new ComponentService(
 			$container->make(Logger::class)
 		));
 
-		$container->singleton(Database::class, fn($container) => new Database(
+		$container->singleton(ConnectionFactory::class, fn($container) => new ConnectionFactory(
 			$container->make(Loader::class),
 			$container->make(Logger::class)
 		));
+		
+		$container->singleton(Router::class, fn($container) => new Router($container));
 
 		$container->singleton(MiddlewarePipeline::class, fn($container) => new MiddlewarePipeline($container));
 
 		$container->singleton(Router::class, fn($container) => new Router($container));
-	}
-
-	public function logger (): object
-	{
-		return $this->container->make(Logger::class);;
 	}
 
 	public function router (): object

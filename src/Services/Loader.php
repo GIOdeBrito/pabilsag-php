@@ -6,9 +6,8 @@ class Loader
 {
 	private string $views = "";
 	private string $layout = "";
-
-	private ?string $dbLogin;
-	private ?string $dbPwd;
+	
+	private array $connectionMetadata = [];
 
 	public function __construct ()
 	{
@@ -33,6 +32,21 @@ class Loader
 	public function getLayoutDirectory (): string
 	{
 		return $this->layout;
+	}
+	
+	public function importConnectionMetadata (string $path): void
+	{
+		if(!file_exists($path))
+		{
+			throw new \Exception("Connection metadata file at '{$path}' does not exist");
+		}
+		
+		$this->connectionMetadata = require $path;
+	}
+	
+	public function getConnectionMetadata (): array
+	{
+		return $this->connectionMetadata;
 	}
 }
 

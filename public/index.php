@@ -26,9 +26,6 @@ require 'src/Controllers/WebController.php';
 require 'src/Controllers/MiddlewareController.php';
 require 'src/Controllers/DIController.php';
 
-// For dependency injection
-require 'src/DependencyInjection/SessionManager.php';
-
 // Controllers registered on router
 $app->router()->addController(Home::class);
 $app->router()->addController(FileController::class);
@@ -42,10 +39,16 @@ $app->components()->useComponents(true);
 $app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
 $app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
 
+// For dependency injection
+require 'src/DependencyInjection/SessionManager.php';
+
 // Bind service for injection
 $app->container()->bind(SessionManager::class, fn($container) => new SessionManager(
 	$container->make(GioPHP\Services\Logger::class)
 ));
+
+// Register database for connection
+$app->loader()->importConnectionMetadata(__DIR__.'/src/Config/Connections.php');
 
 $app->run();
 

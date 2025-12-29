@@ -2,9 +2,17 @@
 
 use GioPHP\Attributes\Route;
 use GioPHP\Http\Response;
+use GioPHP\Database\Database;
 
 class Home
 {
+	private Database $db;
+	
+	public function __construct (Database $database)
+	{
+		$this->db = $database;
+	}
+	
 	#[Route(
 		method: 'GET',
 		path: '/public/',
@@ -39,20 +47,13 @@ class Home
 		description: 'Database test page'
 	)]
 	public function db ($req, $res): Response
-	{
-		$viewData = [
-			'title' => 'Db'
-		];
+	{	
+		$db = $this->db;
 		
-		$db = $this->getDatabase();
-		$db->open();
-		//$db->exec("INSERT INTO USERS VALUES (:idd, :name, :num)", [ 'idd' => 2, 'name' => 'BRUNO', 'num' => 123 ]);
-		$res = $db->query("SELECT * FROM USERS");
+		$db->connect('sqlite_db');
+		$queryResult = $db->query("SELECT * FROM USERS");
 		
-		var_dump($res);
-		die();
-		
-		$res->status(200)->render('Home', '_layout', $viewData);
+		return $res->status(200)->json($queryResult);
 	}
 	
 	#[Route(
@@ -73,7 +74,11 @@ class Home
 	)]
 	public function notFound ($req, $res): Response
 	{	
-		return $res->status(404)->html("<h1>Not Found</h1>");
+		return $res->status(404)->html(
+			<<<HTML
+				<h1>Not Found</h1>
+			HTML
+		);
 	}
 }
 

@@ -2,13 +2,13 @@
 
 namespace GioPHP\Interfaces;
 
+use GioPHP\Infrastructure\ConnectionFactory;
+
 interface DatabaseInterface
 {
-	public function __construct (string $dsn, string $user, string $pwd, array $options);
-	public function __destruct ();
+	public function __construct (ConnectionFactory $connectionFactory);
 	
-	public function connect(): bool;
-	public function disconnect(): void;
+	public function connect(string $connectionName): void;
 	public function query(string $sql, array $params): array|object;
 	public function execute(string $sql, array $params): bool;
 	public function commit(): void;
