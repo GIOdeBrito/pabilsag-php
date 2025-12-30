@@ -4,12 +4,12 @@ namespace GioPHP\Core;
 
 define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
 
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/String.php';
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Json.php';
-require_once GIOPHP_SRC_ROOT_PATH.'/Helpers/Http.php';
+require GIOPHP_SRC_ROOT_PATH.'/Helpers/String.php';
+require GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
+require GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
+require GIOPHP_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
+require GIOPHP_SRC_ROOT_PATH.'/Helpers/Json.php';
+require GIOPHP_SRC_ROOT_PATH.'/Helpers/Http.php';
 
 use GioPHP\Http\Request;
 use GioPHP\Routing\Router;
@@ -22,7 +22,7 @@ use GioPHP\Services\{
 };
 use GioPHP\Infrastructure\ConnectionFactory;
 use GioPHP\Web\CurlClient;
-use GioPHP\Interfaces\Middleware;
+use GioPHP\Interfaces\MiddlewareInterface;
 use GioPHP\Error\ErrorHandler;
 use GioPHP\Database\Database;
 
@@ -87,10 +87,10 @@ class Application
 		return $this->container->make(ComponentService::class);;
 	}
 
-	public function use (Middleware $middleware): void
+	public function addMiddleware (string $middlewareName): void
 	{
-		$pipeline = $this->container->make(middlewarePipeline::class);
-		$pipeline->add($middleware);
+		$pipeline = $this->container->make(MiddlewarePipeline::class);
+		$pipeline->add($middlewareName);
 	}
 
 	public function container (): DIContainer

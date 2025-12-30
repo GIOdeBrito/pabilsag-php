@@ -3,7 +3,7 @@
 use GioPHP\Attributes\Route;
 use GioPHP\Http\Response;
 
-include __DIR__.'/../Middlewares/Auth.php';
+require ABSPATH.'/src/Middlewares/Auth.php';
 
 class MiddlewareController
 {

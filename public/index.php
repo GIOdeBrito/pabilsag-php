@@ -3,7 +3,7 @@
 define('ABSPATH', __DIR__);
 date_default_timezone_set('America/Fortaleza');
 
-require __DIR__.'/../vendor/autoload.php';
+require ABSPATH.'/../vendor/autoload.php';
 
 use GioPHP\Core\Application as App;
 
@@ -14,8 +14,10 @@ $app->loader()->setViewDirectory(ABSPATH."/src/Views");
 $app->error()->useLogging();
 $app->error()->setErrorCallback(function ($message)
 {
-	echo "<h1>Uh-oh. There was an error!</h1>";
-	echo "<p>{$message}</p>";
+	echo <<<HTML
+		<h1>Uh-oh. There was an error!</h1>
+		<p>{$message}</p>
+	HTML;
 });
 
 // Import controller classes
@@ -39,6 +41,14 @@ $app->components()->useComponents(true);
 $app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
 $app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
 
+require 'src/Middlewares/JSONBody.php';
+
+// Global middlewares
+$app->addMiddleware(JSONBody::class);
+
+// Register database for connection
+$app->loader()->importConnectionMetadata(ABSPATH.'/src/Config/Connections.php');
+
 // For dependency injection
 require 'src/DependencyInjection/SessionManager.php';
 
@@ -46,9 +56,6 @@ require 'src/DependencyInjection/SessionManager.php';
 $app->container()->bind(SessionManager::class, fn($container) => new SessionManager(
 	$container->make(GioPHP\Services\Logger::class)
 ));
-
-// Register database for connection
-$app->loader()->importConnectionMetadata(__DIR__.'/src/Config/Connections.php');
 
 $app->run();
 

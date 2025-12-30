@@ -2,7 +2,7 @@
 
 namespace GioPHP\Interfaces;
 
-interface Middleware
+interface MiddlewareInterface
 {
 	public function handle($request, $response, callable $next);
 }

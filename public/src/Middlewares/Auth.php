@@ -1,9 +1,9 @@
 <?php
 
-use GioPHP\Interfaces\Middleware;
+use GioPHP\Interfaces\MiddlewareInterface;
 use GioPHP\Services\Logger;
 
-class AuthMiddleware implements Middleware
+class AuthMiddleware implements MiddlewareInterface
 {
 	private Logger $logger;
 	

@@ -2,7 +2,7 @@
 
 namespace GioPHP\Services;
 
-use GioPHP\Interfaces\Middleware;
+use GioPHP\Interfaces\MiddlewareInterface;
 use GioPHP\Services\DIContainer;
 use GioPHP\Http\{ Request, Response };
 
@@ -18,9 +18,9 @@ class MiddlewarePipeline
 		$this->container = $container;
 	}
 
-	public function add (Middleware $middleware): void
+	public function add (string $middlewareClass): void
 	{
-		array_push($this->middlewares, $middleware);
+		array_push($this->middlewares, $middlewareClass);
 	}
 
 	public function addMultiple (array $middlewares): void
@@ -69,12 +69,12 @@ class MiddlewarePipeline
 
 	private function isMiddlewareInstance (string|object $target): bool
 	{
-		if(is_string($target) && is_a($target, 'GioPHP\Interfaces\Middleware', true))
+		if(is_string($target) && is_a($target, MiddlewareInterface::class, true))
 		{
 			return true;
 		}
 
-		if($target instanceof GioPHP\Interfaces\Middleware)
+		if($target instanceof GioPHP\Interfaces\MiddlewareInterface)
 		{
 			return true;
 		}
