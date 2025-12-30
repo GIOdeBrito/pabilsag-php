@@ -99,7 +99,7 @@ class Response
 					$this->sendPlain($response->getText());
 					break;
 				default:
-					throw new \LogicException("Unknown response type '{$response->getResponseType()}'.");
+					throw new \LogicException("Unknown response type '{$response->getResponseType()}'");
 			}
 		}
 		catch(\Exception $ex)

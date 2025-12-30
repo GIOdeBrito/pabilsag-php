@@ -26,7 +26,7 @@ class ComponentService
 		return $this->useComponents;
 	}
 	
-	#[Deprecated(reason: "Use import() instead")]
+	#[\Deprecated(reason: "Use import() instead")]
 	public function register (string $tagName, string|array|object $callback): void
 	{
 		// Checks if the tag already exists or if the function is callable

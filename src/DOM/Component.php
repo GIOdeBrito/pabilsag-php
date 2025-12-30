@@ -4,7 +4,7 @@ namespace GioPHP\DOM;
 
 use GioPHP\Interfaces\ComponentInterface;
 
-use function GioPHP\Helpers\String\normalize_whitespace;
+use function GioPHP\Helpers\String\{ normalize_whitespace, remove_linebreaks };
 use function GioPHP\Helpers\Polyfill\garray_find;
 
 class Component implements ComponentInterface
@@ -73,7 +73,8 @@ class Component implements ComponentInterface
 
 		array_walk($kvp, function ($value, $key) use (&$properties)
 		{
-			array_push($properties, "{$key}=\"{$value}\"");
+			$keyValuePair = sprintf("\"%s\"=\"%s\"", $key, $value);
+			array_push($properties, $keyValuePair);
 		});
 
 		return implode(' ', $properties);
@@ -116,8 +117,8 @@ class Component implements ComponentInterface
 			
 		endfor;
 		
-		// Removes carriage returns and line breaks
-		$parsedString = str_replace([ "\r", "\n" ], '', $parsedString);
+		// Removes possible carriage returns and line breaks
+		$parsedString = remove_linebreaks($parsedString);
 		
 		return $parsedString;
 	}

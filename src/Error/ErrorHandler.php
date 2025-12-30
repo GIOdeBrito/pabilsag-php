@@ -36,7 +36,7 @@ final class ErrorHandler
 	
 	private function createErrorAndShutdownRules (): void
 	{
-		$foutput = fn($message, $file, $line) => "GioPHP ERROR -> {$message} | File: {$file} | Line: {$line}";
+		$foutput = fn($message, $file, $line) => sprintf("GioPHP ERROR -> %s | File: %s | Line: %s", $message, $file, $line);;
 		
 		// Convert errors into exceptions
 		set_error_handler(function ($severity, $message, $file, $line) use ($foutput)

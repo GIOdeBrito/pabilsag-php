@@ -89,7 +89,7 @@ class Database implements DatabaseInterface
 		{
 			if(!str_starts_with($key, ':'))
 			{
-				$key = ':'.$key;
+				$key = sprintf(":%s", $key);
 			}
 
 			$statement->bindValue($key, $value);
