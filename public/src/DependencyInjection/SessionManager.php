@@ -1,10 +1,12 @@
 <?php
 
+use GioPHP\Services\Logger;
+
 class SessionManager
 {
-	private GioPHP\Services\Logger $logger;
+	private Logger $logger;
 
-	public function __construct (GioPHP\Services\Logger $logger)
+	public function __construct (Logger $logger)
 	{
 		$this->logger = $logger;
 		$logger->info("Session Manager was start'd. Yahoooo!");

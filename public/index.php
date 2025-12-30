@@ -42,9 +42,11 @@ $app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-ic
 $app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
 
 require 'src/Middlewares/JSONBody.php';
+require 'src/Middlewares/GetNuke.php';
 
-// Global middlewares
-$app->addMiddleware(JSONBody::class);
+// Add global middlewares
+$app->middleware()->add(JSONBody::class);
+//$app->middleware()->add(GETNuke::class);
 
 // Register database for connection
 $app->loader()->importConnectionMetadata(ABSPATH.'/src/Config/Connections.php');

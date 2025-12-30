@@ -72,25 +72,24 @@ class Application
 		$container->singleton(Router::class, fn($container) => new Router($container));
 	}
 
-	public function router (): object
+	public function router (): Router
 	{
 		return $this->container->make(Router::class);
 	}
 
-	public function loader (): object
+	public function loader (): Loader
 	{
 		return $this->container->make(Loader::class);
 	}
 
-	public function components (): object
+	public function components (): ComponentService
 	{
 		return $this->container->make(ComponentService::class);;
 	}
 
-	public function addMiddleware (string $middlewareName): void
+	public function middleware (): MiddlewarePipeline
 	{
-		$pipeline = $this->container->make(MiddlewarePipeline::class);
-		$pipeline->add($middlewareName);
+		return $this->container->make(MiddlewarePipeline::class);
 	}
 
 	public function container (): DIContainer

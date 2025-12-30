@@ -2,6 +2,7 @@
 
 use GioPHP\Interfaces\MiddlewareInterface;
 use GioPHP\Services\Logger;
+use GioPHP\Enums\HttpCode;
 
 class AuthMiddleware implements MiddlewareInterface
 {
@@ -15,9 +16,9 @@ class AuthMiddleware implements MiddlewareInterface
 		{
 			$this->logger->error("Request does not contain basic auth");
 			
-			return $res->status(500)->json([
+			return $res->status(HttpCode::InternalServerError)->json([
 				'message' => 'Missing basic auth',
-				'status' => 500
+				'status' => HttpCode::InternalServerError
 			]);
 		}
 		

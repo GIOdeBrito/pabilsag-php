@@ -6,17 +6,6 @@ class ApiController
 {
 	#[Route(
 		method: 'POST',
-		path: '/public/api/v1/schema',
-		description: 'Schema JSON test page.'
-	)]
-	public function schema ($req, $res): void
-	{
-		var_dump($req->body);
-		$res->end(200);
-	}
-
-	#[Route(
-		method: 'POST',
 		path: '/public/api/v1/fileschema',
 		description: 'Schema file upload endpoint.'
 	)]
@@ -26,9 +15,9 @@ class ApiController
 
 		if(!is_array($files))
 		{
-			$res->status(200)->html("
+			$res->status(200)->html(<<<HTML
 				<h1>Not an array!</h1>
-			");
+			HTML);
 		}
 
 		foreach($files as $item)
