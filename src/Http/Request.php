@@ -10,6 +10,7 @@ class Request
 	private array $postdata = [];
 	private array $headers = [];
 	private string $body;
+	private object $parsedBody;
 	
 	public function __construct ($server, $get, $postdata, $cookies, $body)
 	{
@@ -36,14 +37,14 @@ class Request
 		return $this->headers;
 	}
 	
-	public function getBody (): object
+	public function getBody (): string
 	{
-		return json_decode($this->body) ?? (object) [];
+		return $this->body ?? '';
 	}
 	
-	public function getBodyAsString (): string
+	public function getParsedBody (): object
 	{
-		return $this->body;
+		return $this->parsedBody;
 	}
 	
 	public function getQuery (): object
@@ -54,6 +55,11 @@ class Request
 	public function getForm (): object
 	{
 		return (object) $this->postdata;
+	}
+	
+	public function setParsedBody (object $body): void
+	{
+		$this->parsedBody = $body;
 	}
 }
 

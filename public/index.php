@@ -41,11 +41,10 @@ $app->components()->useComponents(true);
 $app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
 $app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
 
-require 'src/Middlewares/JSONBody.php';
 require 'src/Middlewares/GetNuke.php';
 
 // Add global middlewares
-$app->middleware()->add(JSONBody::class);
+$app->middleware()->add(GioPHP\Middlewares\JSONParse::class);
 //$app->middleware()->add(GETNuke::class);
 
 // Register database for connection
