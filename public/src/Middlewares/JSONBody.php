@@ -19,14 +19,14 @@ class JSONBody implements MiddlewareInterface
 		if($req->getMethod() === 'POST' && !is_null($body))
 		{
 			$this->logger->info(
-				"JSON Input: "
+				"JSON request body: "
 				.
 				json_encode($body, JSON_PRETTY_PRINT)
 			);
 		}
 		else
 		{
-			$this->logger->info("Request body is null or empty. Skipping JSON output.");
+			$this->logger->info("Request body is null or empty. Skipping JSON output");
 		}
 		
 		return $next($req, $res);
