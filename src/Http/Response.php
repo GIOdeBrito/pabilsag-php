@@ -127,6 +127,9 @@ class Response
 			throw new \Exception("Could not find view file.");
 		}
 
+		// Extract params as proper variables
+		extract($params);
+
 		// Capture view's content
 		$viewrenderer->beginCapture();
 		include $viewFilePath;
@@ -139,9 +142,6 @@ class Response
 		}
 
 		$body = $viewrenderer->getHtml();
-
-		// Extract params as proper variables
-		extract($params);
 
 		// Load layout
 		include "{$this->loader?->getLayoutDirectory()}/{$layout}.php";

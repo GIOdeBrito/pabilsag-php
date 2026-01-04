@@ -22,7 +22,7 @@ class ViewRenderer
 	public function beginCapture (): void
 	{
 		ob_start();
-		echo '<div></div>';
+		//echo '<div></div>';
 	}
 
 	public function endCapture (): void
