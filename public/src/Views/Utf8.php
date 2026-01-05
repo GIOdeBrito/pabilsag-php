@@ -4,6 +4,8 @@
 
 ?>
 
+<?php require ABSPATH.'/src/Partials/nav.php' ?>
+
 <p>
 	À É	Ô Ç Ã Õ
 

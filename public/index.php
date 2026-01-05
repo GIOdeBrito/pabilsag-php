@@ -3,7 +3,7 @@
 define('ABSPATH', __DIR__);
 date_default_timezone_set('America/Fortaleza');
 
-require ABSPATH.'/../vendor/autoload.php';
+require ABSPATH.'/../src/Core/Autoloader.php';
 
 use Pabilsag\Core\Application as App;
 
@@ -11,7 +11,7 @@ $app = new App();
 
 $app->loader()->setViewDirectory(ABSPATH."/src/Views");
 
-$app->error()->useLogging();
+//$app->error()->useLogging();
 $app->error()->setErrorCallback(function (string $message)
 {
 	echo <<<HTML
@@ -41,8 +41,8 @@ $app->router()->addController(DIController::class);
 
 // Component use and import
 $app->components()->useComponents(true);
-$app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
 $app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
+$app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
 
 // Add global middlewares
 $app->middleware()->add(Pabilsag\Middlewares\JSONParse::class);

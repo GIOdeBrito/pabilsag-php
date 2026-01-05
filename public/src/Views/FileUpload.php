@@ -1,3 +1,5 @@
+<?php require ABSPATH.'/src/Partials/nav.php' ?>
+
 <h1>File Uploader</h1>
 
 <p>Upload and send multiple files here.</p>

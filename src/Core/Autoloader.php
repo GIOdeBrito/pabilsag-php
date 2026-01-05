@@ -1,10 +1,8 @@
 <?php
 
-
-// Pabilsag's autoloader
+// Pabilsag's Autoloader
 //
 // Import this file into your application's main entrypoint.
-// To use Pabilsag without the need of Composer.
 //
 // PHP 8 or higher is required to run it.
 

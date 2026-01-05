@@ -4,6 +4,8 @@
 
 ?>
 
+<?php require ABSPATH.'/src/Partials/nav.php' ?>
+
 <fieldset>
 	<legend>Form POST</legend>
 	

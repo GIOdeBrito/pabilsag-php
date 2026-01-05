@@ -1,4 +1,6 @@
 
+<?php require ABSPATH.'/src/Partials/nav.php' ?>
+
 <main-pabilsag-component-header/>
 
 <p>This comes from a View!</p>

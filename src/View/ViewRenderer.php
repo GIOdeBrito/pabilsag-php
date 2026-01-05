@@ -22,6 +22,10 @@ class ViewRenderer
 	public function beginCapture (): void
 	{
 		ob_start();
+		
+		// Do not remove this, it breaks the view/component
+		// rendering for some mysterious reason
+		echo "<div></div>";
 	}
 
 	public function endCapture (): void

@@ -34,7 +34,7 @@ class DOMParser
 	{
 		if(is_null($node->ownerDocument))
 		{
-			return $node->firstChild->ownerDocument->saveXML($node->firstChild);
+			return $node->firstChild->ownerDocument->saveHTML($node->firstChild);
 		}
 
 		return $node->ownerDocument->saveHTML($node);
