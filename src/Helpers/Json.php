@@ -1,6 +1,6 @@
 <?php 
 
-namespace GioPHP\Helpers\Json;
+namespace Pabilsag\Helpers\Json;
 
 function json_http_response (int $status, array|object $data = []): void
 {

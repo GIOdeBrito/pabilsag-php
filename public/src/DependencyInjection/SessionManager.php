@@ -1,6 +1,6 @@
 <?php
 
-use GioPHP\Services\Logger;
+use Pabilsag\Services\Logger;
 
 class SessionManager
 {
@@ -9,7 +9,7 @@ class SessionManager
 	public function __construct (Logger $logger)
 	{
 		$this->logger = $logger;
-		$logger->info("Session Manager was start'd. Yahoooo!");
+		$logger->info("Session Manager was start'd! :D");
 		session_start();
 	}
 

@@ -1,9 +1,9 @@
 <?php 
 
-namespace GioPHP\Middlewares;
+namespace Pabilsag\Middlewares;
 
-use GioPHP\Services\Logger;
-use GioPHP\Interfaces\MiddlewareInterface;
+use Pabilsag\Services\Logger;
+use Pabilsag\Interfaces\MiddlewareInterface;
 
 // Parse the Request's body into a proper JSON
 // object and also prints its contents to the Log

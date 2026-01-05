@@ -1,8 +1,8 @@
 <?php
 
-namespace GioPHP\Web;
+namespace Pabilsag\Web;
 
-use function GioPHP\Helpers\Json\json_validator;
+use function Pabilsag\Helpers\Json\json_validator;
 
 final class CurlResponse
 {

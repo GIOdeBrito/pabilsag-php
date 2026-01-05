@@ -1,8 +1,8 @@
 <?php
 
-use GioPHP\Attributes\Route;
-use GioPHP\Http\Response;
-use GioPHP\Database\Database;
+use Pabilsag\Attributes\Route;
+use Pabilsag\Http\Response;
+use Pabilsag\Database\Database;
 
 class Home
 {

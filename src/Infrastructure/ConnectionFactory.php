@@ -1,8 +1,8 @@
 <?php 
 
-namespace GioPHP\Infrastructure;
+namespace Pabilsag\Infrastructure;
 
-use GioPHP\Services\{ Loader, Logger };
+use Pabilsag\Services\{ Loader, Logger };
 
 class ConnectionFactory
 {

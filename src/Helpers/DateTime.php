@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Helpers\DateTime;
+namespace Pabilsag\Helpers\DateTime;
 
 function to_date_time (?string $date, string $format = 'Y-m-d'): DateTimeImmutable|null
 {

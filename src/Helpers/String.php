@@ -1,6 +1,6 @@
 <?php 
 
-namespace GioPHP\Helpers\String;
+namespace Pabilsag\Helpers\String;
 
 // Remove all whitespaces
 function normalize_whitespace (string $str): string

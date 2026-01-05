@@ -1,12 +1,12 @@
 <?php
 
-namespace GioPHP\Http;
+namespace Pabilsag\Http;
 
-use GioPHP\Enums\{ ResponseTypes, ContentType };
-use GioPHP\Services\{ Loader, Logger, ComponentService };
-use GioPHP\View\ViewRenderer;
-use GioPHP\Interfaces\ResponseInterface;
-use GioPHP\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
+use Pabilsag\Enums\{ ResponseTypes, ContentType };
+use Pabilsag\Services\{ Loader, Logger, ComponentService };
+use Pabilsag\View\ViewRenderer;
+use Pabilsag\Interfaces\ResponseInterface;
+use Pabilsag\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
 
 class Response
 {

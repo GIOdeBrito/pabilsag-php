@@ -1,7 +1,7 @@
 <?php
 
-use GioPHP\Attributes\Route;
-use GioPHP\Http\Response;
+use Pabilsag\Attributes\Route;
+use Pabilsag\Http\Response;
 
 require ABSPATH.'/src/Middlewares/Auth.php';
 

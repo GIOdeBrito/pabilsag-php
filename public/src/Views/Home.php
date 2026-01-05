@@ -1,5 +1,5 @@
 
-<main-gphp-component-header/>
+<main-pabilsag-component-header/>
 
 <p>This comes from a View!</p>
 <p>Current date: <?= date('d/m/Y') ?></p>

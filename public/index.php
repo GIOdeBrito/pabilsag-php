@@ -5,17 +5,17 @@ date_default_timezone_set('America/Fortaleza');
 
 require ABSPATH.'/../vendor/autoload.php';
 
-use GioPHP\Core\Application as App;
+use Pabilsag\Core\Application as App;
 
 $app = new App();
 
 $app->loader()->setViewDirectory(ABSPATH."/src/Views");
 
 $app->error()->useLogging();
-$app->error()->setErrorCallback(function ($message)
+$app->error()->setErrorCallback(function (string $message)
 {
 	echo <<<HTML
-		<h1>Uh-oh. There was an error!</h1>
+		<h1>Uh-oh, there was an error.</h1>
 		<p>{$message}</p>
 	HTML;
 });
@@ -27,6 +27,9 @@ require 'src/Controllers/ApiController.php';
 require 'src/Controllers/WebController.php';
 require 'src/Controllers/MiddlewareController.php';
 require 'src/Controllers/DIController.php';
+
+// Middlewares
+require 'src/Middlewares/GetNuke.php';
 
 // Controllers registered on router
 $app->router()->addController(Home::class);
@@ -41,10 +44,8 @@ $app->components()->useComponents(true);
 $app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
 $app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
 
-require 'src/Middlewares/GetNuke.php';
-
 // Add global middlewares
-$app->middleware()->add(GioPHP\Middlewares\JSONParse::class);
+$app->middleware()->add(Pabilsag\Middlewares\JSONParse::class);
 //$app->middleware()->add(GETNuke::class);
 
 // Register database for connection
@@ -55,7 +56,7 @@ require 'src/DependencyInjection/SessionManager.php';
 
 // Bind service for injection
 $app->container()->bind(SessionManager::class, fn($container) => new SessionManager(
-	$container->make(GioPHP\Services\Logger::class)
+	$container->make(Pabilsag\Services\Logger::class)
 ));
 
 $app->run();

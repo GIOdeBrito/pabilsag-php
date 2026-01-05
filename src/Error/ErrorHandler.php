@@ -1,8 +1,8 @@
 <?php
 
-namespace GioPHP\Error;
+namespace Pabilsag\Error;
 
-use GioPHP\Services\Logger;
+use Pabilsag\Services\Logger;
 
 final class ErrorHandler
 {
@@ -25,7 +25,7 @@ final class ErrorHandler
 
 		$this->shutdownHandler = function (): void {
 			
-			echo file_get_contents(constant('GIOPHP_SRC_ROOT_PATH').'/Template/InternalError.php');
+			echo file_get_contents(constant('Pabilsag_SRC_ROOT_PATH').'/Template/InternalError.php');
 		};
 	}
 
@@ -36,7 +36,7 @@ final class ErrorHandler
 	
 	private function createErrorAndShutdownRules (): void
 	{
-		$foutput = fn($message, $file, $line) => sprintf("GioPHP ERROR -> %s | File: %s | Line: %s", $message, $file, $line);;
+		$foutput = fn($message, $file, $line) => sprintf("Pabilsag ERROR -> %s | File: %s | Line: %s", $message, $file, $line);;
 		
 		// Convert errors into exceptions
 		set_error_handler(function ($severity, $message, $file, $line) use ($foutput)

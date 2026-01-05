@@ -1,6 +1,6 @@
 <?php 
 
-namespace GioPHP\Helpers\Http;
+namespace Pabilsag\Helpers\Http;
 
 function get_request_headers (): array
 {

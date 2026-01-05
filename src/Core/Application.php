@@ -1,32 +1,32 @@
 <?php
 
-namespace GioPHP\Core;
+namespace Pabilsag\Core;
 
-define("GIOPHP_SRC_ROOT_PATH", __DIR__.'/..');
+define("Pabilsag_SRC_ROOT_PATH", __DIR__.'/..');
 
-require GIOPHP_SRC_ROOT_PATH.'/Helpers/String.php';
-require GIOPHP_SRC_ROOT_PATH.'/Helpers/DateTime.php';
-require GIOPHP_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
-require GIOPHP_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
-require GIOPHP_SRC_ROOT_PATH.'/Helpers/Json.php';
-require GIOPHP_SRC_ROOT_PATH.'/Helpers/Http.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/String.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/DateTime.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/Json.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/Http.php';
 
-use GioPHP\Http\Request;
-use GioPHP\Routing\Router;
-use GioPHP\Services\{
+use Pabilsag\Http\Request;
+use Pabilsag\Routing\Router;
+use Pabilsag\Services\{
 	Loader,
 	Logger,
 	ComponentService,
 	MiddlewarePipeline,
 	DIContainer
 };
-use GioPHP\Infrastructure\ConnectionFactory;
-use GioPHP\Web\CurlClient;
-use GioPHP\Interfaces\MiddlewareInterface;
-use GioPHP\Error\ErrorHandler;
-use GioPHP\Database\Database;
+use Pabilsag\Infrastructure\ConnectionFactory;
+use Pabilsag\Web\CurlClient;
+use Pabilsag\Interfaces\MiddlewareInterface;
+use Pabilsag\Error\ErrorHandler;
+use Pabilsag\Database\Database;
 
-use function GioPHP\Helpers\Http\get_request_headers;
+use function Pabilsag\Helpers\Http\get_request_headers;
 
 class Application
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\DOM;
+namespace Pabilsag\DOM;
 
 class DOMParser
 {

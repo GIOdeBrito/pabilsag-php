@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Helpers\RouteAttributes;
+namespace Pabilsag\Helpers\RouteAttributes;
 
 function get_controller_schemas (string $controller): array
 {

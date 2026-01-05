@@ -1,8 +1,8 @@
 <?php
 
-use GioPHP\Attributes\Route;
-use GioPHP\Web\CurlClient;
-use GioPHP\Http\Response;
+use Pabilsag\Attributes\Route;
+use Pabilsag\Web\CurlClient;
+use Pabilsag\Http\Response;
 
 class WebController
 {
@@ -37,7 +37,7 @@ class WebController
 		$response = $curl
 			->get()
 			->url('https://postman-echo.com/get')
-			->setQuery([ 'origin' => 'GioPHP\\CurlClient', 'date' => date('Y-m-d H:i:s') ])
+			->setQuery([ 'origin' => 'Pabilsag\\CurlClient', 'date' => date('Y-m-d H:i:s') ])
 			->send();
 
 		return $res->status(200)->json($response);

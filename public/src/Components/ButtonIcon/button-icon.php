@@ -1,6 +1,6 @@
 <?php
 
-use GioPHP\DOM\Component;
+use Pabilsag\DOM\Component;
 
 // Example use of heredoc
 return new Component(

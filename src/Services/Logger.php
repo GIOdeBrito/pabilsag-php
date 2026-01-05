@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Services;
+namespace Pabilsag\Services;
 
 class Logger
 {
@@ -14,7 +14,7 @@ class Logger
 			'ERROR' 	=> LOG_ERR
 		];
 
-		openlog('GioPHP', LOG_PID | LOG_PERROR, LOG_USER);
+		openlog('Pabilsag', LOG_PID | LOG_PERROR, LOG_USER);
 		syslog($loglevel[$level], "[{$now}] $message");
 		closelog();
 	}

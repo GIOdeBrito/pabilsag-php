@@ -1,9 +1,9 @@
 <?php 
 
-namespace GioPHP\Database;
+namespace Pabilsag\Database;
 
-use GioPHP\Interfaces\DatabaseInterface;
-use GioPHP\Infrastructure\ConnectionFactory;
+use Pabilsag\Interfaces\DatabaseInterface;
+use Pabilsag\Infrastructure\ConnectionFactory;
 
 class Database implements DatabaseInterface
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace GioPHP\DOM;
+namespace Pabilsag\DOM;
 
-use GioPHP\Interfaces\ComponentInterface;
+use Pabilsag\Interfaces\ComponentInterface;
 
-use function GioPHP\Helpers\String\{ normalize_whitespace, remove_linebreaks };
-use function GioPHP\Helpers\Polyfill\garray_find;
+use function Pabilsag\Helpers\String\{ normalize_whitespace, remove_linebreaks };
+use function Pabilsag\Helpers\Polyfill\garray_find;
 
 class Component implements ComponentInterface
 {

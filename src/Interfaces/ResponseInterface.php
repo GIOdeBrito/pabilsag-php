@@ -1,8 +1,8 @@
 <?php
 
-namespace GioPHP\Interfaces;
+namespace Pabilsag\Interfaces;
 
-use GioPHP\Enums\ResponseTypes;
+use Pabilsag\Enums\ResponseTypes;
 
 interface ResponseInterface
 {

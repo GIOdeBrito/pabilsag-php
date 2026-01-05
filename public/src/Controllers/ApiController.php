@@ -1,6 +1,6 @@
 <?php
 
-use GioPHP\Attributes\Route;
+use Pabilsag\Attributes\Route;
 
 class ApiController
 {

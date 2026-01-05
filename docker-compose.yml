@@ -1,6 +1,6 @@
 services:
     app:
-        container_name: gio-php-app
+        container_name: pabilsag-php-app
         build:
             context: .
             dockerfile: Dockerfile

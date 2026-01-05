@@ -1,9 +1,9 @@
 <?php
 
-namespace GioPHP\Services;
+namespace Pabilsag\Services;
 
-use GioPHP\Services\Logger;
-use GioPHP\Interfaces\ComponentInterface;
+use Pabilsag\Services\Logger;
+use Pabilsag\Interfaces\ComponentInterface;
 
 class ComponentService
 {

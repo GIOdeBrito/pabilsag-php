@@ -1,10 +1,10 @@
 <?php
 
-use GioPHP\DOM\Component;
+use Pabilsag\DOM\Component;
 
 // Example use of a template file
 return new Component(
-	tag: 'main-gphp-component-header',
+	tag: 'main-pabilsag-component-header',
 	template: __DIR__.'/template.php'
 );
 

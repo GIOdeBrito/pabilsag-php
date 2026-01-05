@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Helpers\Polyfill;
+namespace Pabilsag\Helpers\Polyfill;
 
 // Sort of polyfill for PHP's 8.3 'json_validate' function
 function json_validator (string $data): bool

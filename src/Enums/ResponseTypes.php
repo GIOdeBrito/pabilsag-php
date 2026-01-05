@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Enums;
+namespace Pabilsag\Enums;
 
 enum ResponseTypes
 {

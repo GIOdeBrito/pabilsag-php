@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Attributes;
+namespace Pabilsag\Attributes;
 
 use Attribute;
 

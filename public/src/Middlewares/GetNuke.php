@@ -1,8 +1,8 @@
 <?php 
 
-use GioPHP\Services\Logger;
-use GioPHP\Interfaces\MiddlewareInterface;
-use GioPHP\Enums\HttpCode;
+use Pabilsag\Services\Logger;
+use Pabilsag\Interfaces\MiddlewareInterface;
+use Pabilsag\Enums\HttpCode;
 
 // This is a jest middleware
 // it simply ceases any GET requests

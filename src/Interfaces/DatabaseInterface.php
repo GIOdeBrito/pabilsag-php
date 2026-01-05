@@ -1,8 +1,8 @@
 <?php 
 
-namespace GioPHP\Interfaces;
+namespace Pabilsag\Interfaces;
 
-use GioPHP\Infrastructure\ConnectionFactory;
+use Pabilsag\Infrastructure\ConnectionFactory;
 
 interface DatabaseInterface
 {

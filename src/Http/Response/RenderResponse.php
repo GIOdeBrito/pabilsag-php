@@ -1,9 +1,9 @@
 <?php
 
-namespace GioPHP\Http\Response;
+namespace Pabilsag\Http\Response;
 
-use GioPHP\Enums\{ResponseTypes, ContentType};
-use GioPHP\Interfaces\ResponseInterface;
+use Pabilsag\Enums\{ResponseTypes, ContentType};
+use Pabilsag\Interfaces\ResponseInterface;
 
 final class RenderResponse implements ResponseInterface
 {

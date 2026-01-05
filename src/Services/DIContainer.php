@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Services;
+namespace Pabilsag\Services;
 
 // Dependency injection container 
 final class DIContainer

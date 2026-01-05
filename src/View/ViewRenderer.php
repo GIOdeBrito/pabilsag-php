@@ -2,10 +2,10 @@
 
 /* View renderer */
 
-namespace GioPHP\View;
+namespace Pabilsag\View;
 
-use GioPHP\DOM\DOMParser;
-use GioPHP\Services\ComponentService;
+use Pabilsag\DOM\DOMParser;
+use Pabilsag\Services\ComponentService;
 
 class ViewRenderer
 {

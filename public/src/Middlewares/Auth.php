@@ -1,8 +1,8 @@
 <?php
 
-use GioPHP\Interfaces\MiddlewareInterface;
-use GioPHP\Services\Logger;
-use GioPHP\Enums\HttpCode;
+use Pabilsag\Interfaces\MiddlewareInterface;
+use Pabilsag\Services\Logger;
+use Pabilsag\Enums\HttpCode;
 
 class AuthMiddleware implements MiddlewareInterface
 {

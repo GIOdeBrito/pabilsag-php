@@ -1,9 +1,9 @@
 <?php
 
-namespace GioPHP\Web;
+namespace Pabilsag\Web;
 
-use GioPHP\Enums\HttpMethod;
-use GioPHP\Web\CurlResponse;
+use Pabilsag\Enums\HttpMethod;
+use Pabilsag\Web\CurlResponse;
 
 final class CurlClient
 {
@@ -79,7 +79,7 @@ final class CurlClient
 
 		if(curl_errno($this->curl))
 		{
-			throw new \Exception(implode(' ', [ "GioPHP/CurlClient error:", curl_error($curl) ]));
+			throw new \Exception(implode(' ', [ "Pabilsag/CurlClient error:", curl_error($curl) ]));
         }
 
 		curl_close($this->curl);

@@ -1,6 +1,6 @@
 <?php 
 
-namespace GioPHP\Infrastructure\Serialization;
+namespace Pabilsag\Infrastructure\Serialization;
 
 class JsonDeserializer
 {

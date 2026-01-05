@@ -1,6 +1,6 @@
 <?php
 
-namespace GioPHP\Services;
+namespace Pabilsag\Services;
 
 class Loader
 {
@@ -11,7 +11,7 @@ class Loader
 
 	public function __construct ()
 	{
-		$this->layout = constant("GIOPHP_SRC_ROOT_PATH")."/Template/";
+		$this->layout = constant("Pabilsag_SRC_ROOT_PATH")."/Template/";
 	}
 
 	public function setViewDirectory (string $path): void

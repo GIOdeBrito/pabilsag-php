@@ -1,10 +1,10 @@
 <?php
 
-namespace GioPHP\Services;
+namespace Pabilsag\Services;
 
-use GioPHP\Interfaces\MiddlewareInterface;
-use GioPHP\Services\DIContainer;
-use GioPHP\Http\{ Request, Response };
+use Pabilsag\Interfaces\MiddlewareInterface;
+use Pabilsag\Services\DIContainer;
+use Pabilsag\Http\{ Request, Response };
 
 class MiddlewarePipeline
 {
@@ -74,7 +74,7 @@ class MiddlewarePipeline
 			return true;
 		}
 
-		if($target instanceof GioPHP\Interfaces\MiddlewareInterface)
+		if($target instanceof Pabilsag\Interfaces\MiddlewareInterface)
 		{
 			return true;
 		}

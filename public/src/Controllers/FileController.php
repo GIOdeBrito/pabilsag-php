@@ -1,8 +1,7 @@
 <?php
 
-use GioPHP\Enums\ContentType;
-
-use GioPHP\Attributes\Route;
+use Pabilsag\Enums\ContentType;
+use Pabilsag\Attributes\Route;
 
 class FileController
 {

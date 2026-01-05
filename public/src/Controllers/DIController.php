@@ -1,9 +1,9 @@
 <?php
 
-use GioPHP\Enums\ContentType;
-use GioPHP\Attributes\Route;
-use GioPHP\Services\Logger;
-use GioPHP\Http\Response;
+use Pabilsag\Enums\ContentType;
+use Pabilsag\Attributes\Route;
+use Pabilsag\Services\Logger;
+use Pabilsag\Http\Response;
 
 class DIController
 {

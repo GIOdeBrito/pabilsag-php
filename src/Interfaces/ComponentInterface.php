@@ -1,6 +1,6 @@
 <?php 
 
-namespace GioPHP\Interfaces;
+namespace Pabilsag\Interfaces;
 
 interface ComponentInterface 
 {
