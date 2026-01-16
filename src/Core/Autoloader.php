@@ -2,9 +2,9 @@
 
 // Pabilsag's Autoloader
 //
-// Import this file into your application's main entrypoint.
+// Import this file into your application's main entrypoint
 //
-// PHP 8 or higher is required to run it.
+// PHP 8 or higher is required to properly run this tool
 
 spl_autoload_register(function (string $classname)
 {

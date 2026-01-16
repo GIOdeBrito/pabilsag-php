@@ -39,11 +39,6 @@ $app->router()->addController(WebController::class);
 $app->router()->addController(MiddlewareController::class);
 $app->router()->addController(DIController::class);
 
-// Component use and import
-$app->components()->useComponents(true);
-$app->components()->import(include ABSPATH.'/src/Components/Header/header.php');
-$app->components()->import(include ABSPATH.'/src/Components/ButtonIcon/button-icon.php');
-
 // Add global middlewares
 $app->middleware()->add(Pabilsag\Middlewares\JSONParse::class);
 //$app->middleware()->add(GETNuke::class);

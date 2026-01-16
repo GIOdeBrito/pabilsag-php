@@ -3,7 +3,7 @@
 namespace Pabilsag\Http;
 
 use Pabilsag\Enums\{ ResponseTypes, ContentType };
-use Pabilsag\Services\{ Loader, Logger, ComponentService };
+use Pabilsag\Services\{ Loader, Logger };
 use Pabilsag\View\ViewRenderer;
 use Pabilsag\Interfaces\ResponseInterface;
 use Pabilsag\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
@@ -13,14 +13,12 @@ class Response
 	private int $code = 200;
 	private Loader $loader;
 	private Logger $logger;
-	private ComponentService $components;
 	private ResponseInterface $prepared;
 
-	public function __construct (Loader $loader, Logger $logger, ComponentService $components)
+	public function __construct (Loader $loader, Logger $logger)
 	{
 		$this->loader = $loader;
 		$this->logger = $logger;
-		$this->components = $components;
 	}
 
 	public function status (int $code = 200): Response
@@ -119,7 +117,7 @@ class Response
 			throw new \Exception("Views path was not set.");
 		}
 
-		$viewrenderer = new ViewRenderer($this->components);
+		$viewrenderer = new ViewRenderer();
 		$viewFilePath = "{$viewPath}/{$view}.php";
 
 		if(!file_exists($viewFilePath))
@@ -132,14 +130,10 @@ class Response
 
 		// Capture view's content
 		$viewrenderer->beginCapture();
-		include $viewFilePath;
-		$viewrenderer->endCapture();
 
-		// Replace components if allowed
-		if($this->components->isUsingComponents())
-		{
-			$viewrenderer->setComponentsForElements();
-		}
+		include $viewFilePath;
+
+		$viewrenderer->endCapture();
 
 		$body = $viewrenderer->getHtml();
 

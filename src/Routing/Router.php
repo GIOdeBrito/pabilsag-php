@@ -3,7 +3,7 @@
 namespace Pabilsag\Routing;
 
 use Pabilsag\Http\{ Request, Response };
-use Pabilsag\Services\{ Loader, Logger, ComponentService, MiddlewarePipeline, DIContainer };
+use Pabilsag\Services\{ Loader, Logger, MiddlewarePipeline, DIContainer };
 use Pabilsag\Routing\ControllerRoute;
 use Pabilsag\Enums\HttpMethod;
 
@@ -57,13 +57,12 @@ class Router
 	{
 		$response = new Response(
 			$this->container->make(Loader::class),
-			$this->container->make(Logger::class),
-			$this->container->make(ComponentService::class)
+			$this->container->make(Logger::class)
 		);
-		
+
 		$requestMethod = $request->getMethod();
 		$requestUri = $request->getUri();
-		
+
 		// Redirect to not found page
 		if(!array_key_exists($requestUri, $this->routes[$requestMethod]))
 		{
@@ -74,13 +73,13 @@ class Router
 
 		// Self-contained route enqueued for the pipeline
 		$routeQueued = function ($request, $response) use ($route): Response {
-			
+
 			// Instantiates the route controller
 			$controller = $this->container->make($route->getController());
-			
+
 			// Calls controller selected method
 			$controllerResponse = $controller->{$route->getControllerMethod()}($request, $response);
-			
+
 			return $controllerResponse;
 		};
 

@@ -16,7 +16,6 @@ use Pabilsag\Routing\Router;
 use Pabilsag\Services\{
 	Loader,
 	Logger,
-	ComponentService,
 	MiddlewarePipeline,
 	DIContainer
 };
@@ -37,7 +36,7 @@ class Application
 	{
 		$container = new DIContainer();
 		$this->container = $container;
-		
+
 		$this->errHandler = new ErrorHandler($container->make(Logger::class));
 
 		$container->bind(Logger::class, fn() => new Logger());
@@ -50,21 +49,18 @@ class Application
 			$_COOKIE,
 			file_get_contents('php://input')
 		));
-		
+
 		$container->bind(Database::class, fn($container) => new Database(
 			$container->make(ConnectionFactory::class)
 		));
 
 		$container->singleton(Loader::class, fn() => new Loader());
-		$container->singleton(ComponentService::class, fn($container) => new ComponentService(
-			$container->make(Logger::class)
-		));
 
 		$container->singleton(ConnectionFactory::class, fn($container) => new ConnectionFactory(
 			$container->make(Loader::class),
 			$container->make(Logger::class)
 		));
-		
+
 		$container->singleton(Router::class, fn($container) => new Router($container));
 
 		$container->singleton(MiddlewarePipeline::class, fn($container) => new MiddlewarePipeline($container));
@@ -80,11 +76,6 @@ class Application
 	public function loader (): Loader
 	{
 		return $this->container->make(Loader::class);
-	}
-
-	public function components (): ComponentService
-	{
-		return $this->container->make(ComponentService::class);;
 	}
 
 	public function middleware (): MiddlewarePipeline
@@ -111,7 +102,7 @@ class Application
 
 		// Send stuff to browser
 		$response->send();
-		
+
 		die();
 	}
 }
