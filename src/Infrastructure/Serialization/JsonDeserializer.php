@@ -23,10 +23,11 @@ class JsonDeserializer
 		{
 			return new $className( ...json_decode($data, true) );
 		}
-		catch(\Exception $ex)
+		// Throwable catches both errors and exceptions
+		catch(\Throwable $ex)
 		{
-			
-			throw $ex;
+			$this->logger->error($ex->getMessage());
+			throw new \Exception("An error ocurred during object deserialization");
 		}
 	}
 }
