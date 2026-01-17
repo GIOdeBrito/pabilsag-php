@@ -6,32 +6,16 @@ class ApiController
 {
 	#[Route(
 		method: 'POST',
-		path: '/public/api/v1/fileschema',
-		description: 'Schema file upload endpoint.'
+		path: '/public/api/v1/json/deserialize',
+		description: 'JSON deserialization'
 	)]
-	public function schemaFile ($req, $res): void
+	public function apiDeserialize ($req, $res): Response
 	{
-		$files = $req->files->annex;
+		$body = $req->getBody();
 
-		if(!is_array($files))
-		{
-			$res->status(200)->html(<<<HTML
-				<h1>Not an array!</h1>
-			HTML);
-		}
 
-		foreach($files as $item)
-		{
-			?>
-			<p>Name: <?= $item->name() ?></p>
-			<p>Extension: <?= $item->extension() ?></p>
-			<p>Type: <?= $item->contentType() ?></p>
-			<p>Size: <?= $item->inKiloBytes() ?>KB</p>
-			<br>
-			<?php
-		}
 
-		$res->end(200);
+		return $res->status(200)->json();
 	}
 
 	#[Route(
@@ -39,9 +23,12 @@ class ApiController
 		path: '/public/api/v1/jsondump',
 		description: 'JSON dump'
 	)]
-	public function jsonDump ($req, $res): void
+	public function jsonDump ($req, $res): Response
 	{
-		var_dump($req->body->content);
+		return $res->status(200)->json(
+			'message' => 'JSON received',
+			'data' => $req->getBody()
+		);
 	}
 }
 
