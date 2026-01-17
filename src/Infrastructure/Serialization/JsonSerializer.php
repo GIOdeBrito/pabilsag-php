@@ -8,6 +8,10 @@ use function Pabilsag\Helpers\Object\object_to_assoc_array;
 
 class JsonSerializer
 {
+	public function __construct (
+		public Logger $logger
+	) {}
+
 	public function toJson (object $obj, bool $includePrivate = false): string
 	{
 	    $objarray = object_to_assoc_array($obj, $includePrivate);

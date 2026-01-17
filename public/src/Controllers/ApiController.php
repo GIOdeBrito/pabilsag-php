@@ -25,10 +25,10 @@ class ApiController
 	)]
 	public function jsonDump ($req, $res): Response
 	{
-		return $res->status(200)->json(
+		return $res->status(200)->json([
 			'message' => 'JSON received',
 			'data' => $req->getBody()
-		);
+		]);
 	}
 }
 

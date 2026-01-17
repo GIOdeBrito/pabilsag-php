@@ -21,6 +21,7 @@ use Pabilsag\Services\{
 	DIContainer
 };
 use Pabilsag\Infrastructure\ConnectionFactory;
+use Pabilsag\Infrastructure\Serialization\{ JsonDeserializer, JsonSerializer };
 use Pabilsag\Web\CurlClient;
 use Pabilsag\Interfaces\MiddlewareInterface;
 use Pabilsag\Error\ErrorHandler;
@@ -59,6 +60,14 @@ class Application
 
 		$container->singleton(ConnectionFactory::class, fn($container) => new ConnectionFactory(
 			$container->make(Loader::class),
+			$container->make(Logger::class)
+		));
+
+		$container->bind(JsonSerializer::class, fn($container) => new JsonSerializer(
+			$container->make(Logger::class)
+		));
+
+		$container->bind(JsonDeserializer::class, fn($container) => new JsonDeserializer(
 			$container->make(Logger::class)
 		));
 
