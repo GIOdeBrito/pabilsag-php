@@ -7,6 +7,8 @@ require ABSPATH.'/../src/Core/Autoloader.php';
 
 use Pabilsag\Core\Application as App;
 
+use function Pabilsag\Helpers\Env\env_reader;
+
 $app = new App();
 
 $app->loader()->setViewDirectory(ABSPATH."/src/Views");
@@ -19,6 +21,9 @@ $app->error()->setErrorCallback(function (string $message)
 		<p>{$message}</p>
 	HTML;
 });
+
+// Load environment variables
+env_reader(ABSPATH.'/.env.public');
 
 // Import controller classes
 require 'src/Controllers/Home.php';

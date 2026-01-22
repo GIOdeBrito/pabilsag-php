@@ -5,6 +5,7 @@ namespace Pabilsag\Core;
 define("Pabilsag_SRC_ROOT_PATH", __DIR__.'/..');
 
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/String.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/Env.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/Object.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/DateTime.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
