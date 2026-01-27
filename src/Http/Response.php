@@ -77,6 +77,8 @@ class Response
 		http_response_code(intval($response->getStatus()));
 		header('Content-Type: '.$response->getContentType());
 
+		// TODO: Refactor. Implement send function in each response type...
+
 		try
 		{
 			switch($response->getResponseType())
