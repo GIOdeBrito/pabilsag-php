@@ -4,7 +4,9 @@ namespace Pabilsag\Core;
 
 define("Pabilsag_SRC_ROOT_PATH", __DIR__.'/..');
 
+// Import helper files
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/String.php';
+require Pabilsag_SRC_ROOT_PATH.'/Helpers/Dir.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/Env.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/Object.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/DateTime.php';
