@@ -72,8 +72,8 @@ class Router
 		$route = $this->routes[$requestMethod][$requestUri];
 
 		// Self-contained route enqueued for the pipeline
-		$routeQueued = function ($request, $response) use ($route): Response {
-
+		$routeQueued = function ($request, $response) use ($route): Response
+		{
 			// Instantiates the route controller
 			$controller = $this->container->make($route->getController());
 

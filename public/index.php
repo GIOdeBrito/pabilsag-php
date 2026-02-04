@@ -13,12 +13,14 @@ $app = new App();
 
 $app->loader()->setViewDirectory(ABSPATH."/src/Views");
 
-//$app->error()->useLogging();
-$app->error()->setErrorCallback(function (string $message)
+$app->error()->handleErrors();
+$app->error()->onError(function (string $message, string $file, int $line)
 {
 	echo <<<HTML
 		<h1>Uh-oh, there was an error.</h1>
-		<p>{$message}</p>
+		<p>Error: {$message}</p>
+		<p>File: {$file}</p>
+		<p>Line: {$line}</p>
 	HTML;
 });
 
@@ -54,7 +56,7 @@ $app->loader()->importConnectionMetadata(ABSPATH.'/src/Config/Connections.php');
 // For dependency injection
 require 'src/DependencyInjection/SessionManager.php';
 
-// Bind service for injection
+// Bind service for injection later
 $app->container()->bind(SessionManager::class, fn($container) => new SessionManager(
 	$container->make(Pabilsag\Services\Logger::class)
 ));

@@ -4,11 +4,9 @@ use Pabilsag\Services\Logger;
 
 class SessionManager
 {
-	private Logger $logger;
-
-	public function __construct (Logger $logger)
-	{
-		$this->logger = $logger;
+	public function __construct (
+		private Logger $logger
+	) {
 		$logger->info("Session Manager was start'd! :D");
 		session_start();
 	}
