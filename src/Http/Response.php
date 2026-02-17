@@ -3,7 +3,7 @@
 namespace Pabilsag\Http;
 
 use Pabilsag\Enums\{ ResponseTypes, ContentType };
-use Pabilsag\Services\{ Loader, Logger };
+use Pabilsag\Services\{ Loader, Logger, AssetManager };
 use Pabilsag\View\ViewRenderer;
 use Pabilsag\Interfaces\ResponseInterface;
 use Pabilsag\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
@@ -11,15 +11,13 @@ use Pabilsag\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResp
 class Response
 {
 	private int $code = 200;
-	private Loader $loader;
-	private Logger $logger;
 	private ResponseInterface $prepared;
 
-	public function __construct (Loader $loader, Logger $logger)
-	{
-		$this->loader = $loader;
-		$this->logger = $logger;
-	}
+	public function __construct (
+		private Loader $loader,
+		private Logger $logger,
+		private AssetManager $assetManager
+	) {}
 
 	public function status (int $code = 200): Response
 	{
@@ -139,6 +137,13 @@ class Response
 
 		$body = $viewrenderer->getHtml();
 
+		// Extract the framework's parameters
+		extract([
+			'Pabilsag' => (object) [
+				'assets' => $this->assetManager
+			]
+		]);
+
 		// Load layout
 		include "{$this->loader?->getLayoutDirectory()}/{$layout}.php";
 	}
@@ -170,4 +175,3 @@ class Response
 	}
 }
 
-?>

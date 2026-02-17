@@ -15,13 +15,14 @@ require Pabilsag_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/Json.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/Http.php';
 
-use Pabilsag\Http\Request;
+use Pabilsag\Http\{ Request, Response };
 use Pabilsag\Routing\Router;
 use Pabilsag\Services\{
 	Loader,
 	Logger,
 	MiddlewarePipeline,
-	DIContainer
+	DIContainer,
+	AssetManager
 };
 use Pabilsag\Infrastructure\ConnectionFactory;
 use Pabilsag\Infrastructure\Serialization\{ JsonDeserializer, JsonSerializer };
@@ -55,11 +56,21 @@ class Application
 			file_get_contents('php://input')
 		));
 
+		$container->bind(Response::class, fn($container) => new Response(
+			$container->make(Loader::class),
+			$container->make(Logger::class),
+			$container->make(AssetManager::class)
+		));
+
 		$container->bind(Database::class, fn($container) => new Database(
 			$container->make(ConnectionFactory::class)
 		));
 
 		$container->singleton(Loader::class, fn() => new Loader());
+
+		$container->singleton(AssetManager::class, fn($container) => new AssetManager(
+			$container->make(Logger::class)
+		));
 
 		$container->singleton(ConnectionFactory::class, fn($container) => new ConnectionFactory(
 			$container->make(Loader::class),

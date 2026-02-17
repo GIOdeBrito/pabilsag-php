@@ -15,18 +15,15 @@ class Router
 	private array $controllers = [];
 	private string $notFoundPage = "";
 
-	private DIContainer $container;
-
-	public function __construct (DIContainer $container)
-	{
+	public function __construct (
+		private DIContainer $container
+	) {
 		$this->routes = [
 			HttpMethod::GET 		=> [],
 			HttpMethod::POST 		=> [],
 			HttpMethod::PUT 		=> [],
 			HttpMethod::DELETE 		=> []
 		];
-
-		$this->container = $container;
 	}
 
 	public function addController (string $controller): void
@@ -55,10 +52,7 @@ class Router
 
 	public function call (Request $request): Response
 	{
-		$response = new Response(
-			$this->container->make(Loader::class),
-			$this->container->make(Logger::class)
-		);
+		$response = $this->container->make(Response::class);
 
 		$requestMethod = $request->getMethod();
 		$requestUri = $request->getUri();
@@ -93,4 +87,3 @@ class Router
 	}
 }
 
-?>

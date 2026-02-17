@@ -1,6 +1,6 @@
 <?php
 
-/* Pabilsag Layout */
+// Pabilsag Layout
 
 ?>
 <!DOCTYPE html>
@@ -11,6 +11,8 @@
 		<meta name="description" content="Pabilsag default layout">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title><?= $title ?? 'Page' ?></title>
+		<?= $Pabilsag->assets->renderStyleSheets() ?>
+		<?= $Pabilsag->assets->renderScripts() ?>
 	</head>
 
 	<body>
