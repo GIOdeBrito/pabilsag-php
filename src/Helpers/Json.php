@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Pabilsag\Helpers\Json;
 
@@ -8,4 +8,3 @@ function json_http_response (int $status, array|object $data = []): void
 	echo json_encode($data, JSON);
 }
 
-?>

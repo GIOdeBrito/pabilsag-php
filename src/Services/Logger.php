@@ -10,8 +10,8 @@ class Logger
 
 		$loglevel = [
 			'INFO' 		=> LOG_INFO,
-			'WARNING' 	=> LOG_WARNING,
-			'ERROR' 	=> LOG_ERR
+			'WARN' 		=> LOG_WARNING,
+			'ERR' 		=> LOG_ERR
 		];
 
 		openlog('Pabilsag', LOG_PID | LOG_PERROR, LOG_USER);

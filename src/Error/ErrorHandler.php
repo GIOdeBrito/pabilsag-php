@@ -10,9 +10,7 @@ final class ErrorHandler
 
 	public function __construct (
 		private Logger $logger
-	) {
-		$this->logger = $logger;
-	}
+	) {}
 
 	public function handleErrors (): void
 	{
@@ -80,4 +78,3 @@ final class ErrorHandler
 	}
 }
 
-?>

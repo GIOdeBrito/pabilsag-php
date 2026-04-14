@@ -26,4 +26,3 @@ function object_to_assoc_array ($obj, $includePrivate = false): array
     return $objarray;
 }
 
-?>

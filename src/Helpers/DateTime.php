@@ -19,4 +19,3 @@ function to_date_time (?string $date, string $format = 'Y-m-d'): DateTimeImmutab
     return $dateTime;
 }
 
-?>

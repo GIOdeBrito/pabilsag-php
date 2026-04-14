@@ -32,4 +32,3 @@ function garray_find (array $arr, callable $predicate): mixed
     return NULL;
 }
 
-?>

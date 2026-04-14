@@ -19,4 +19,3 @@ interface ResponseInterface
 	public function getContentType(): string;
 }
 
-?>

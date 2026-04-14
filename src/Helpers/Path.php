@@ -16,4 +16,3 @@ function standardize_file_path (string $path): string
 	return $prepend.implode(DIRECTORY_SEPARATOR, array_filter(explode(DIRECTORY_SEPARATOR, $fpath), fn($x) => $x));
 }
 
-?>

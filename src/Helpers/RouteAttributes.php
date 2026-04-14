@@ -30,4 +30,3 @@ function get_controller_schemas (string $controller): array
 	return $routeAttributes;
 }
 
-?>

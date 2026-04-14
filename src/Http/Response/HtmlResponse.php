@@ -25,4 +25,3 @@ final class HtmlResponse implements ResponseInterface
 	public function getContentType(): string { return ContentType::Html; }
 }
 
-?>

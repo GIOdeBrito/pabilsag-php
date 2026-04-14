@@ -2,63 +2,50 @@
 
 namespace Pabilsag\Helpers\Env;
 
-function env_reader (string $path): array
+function env_reader(string $path): array
 {
-    $file = @fopen($path, "r");
+    $file = @fopen($path, 'r');
+    if (!$file) {
+        throw new \Exception("Cannot open file: $path");
+    }
 
     $params = [];
 
-    while(($buffer = fgets($file, 4096)) !== false)
-    {
-        // Ignores empty lines
-        if(trim($buffer) === "")
-        {
+    while (($buffer = fgets($file, 4096)) !== false)
+	{
+        $line = trim($buffer);
+        if ($line === '' || str_starts_with($line, '#')) {
             continue;
         }
 
-        // Ignores comments
-        if(str_starts_with($buffer, '#'))
-        {
-            continue;
+        $split = explode('=', $line, 2);
+        if (count($split) !== 2) {
+            throw new \Exception("Invalid line: $line");
         }
 
-        $split_string = explode('=', $buffer);
+        $key   = trim($split[0]);
+        $value = trim($split[1]);
 
-        $key = trim($split_string[0]);
-        $value = trim($split_string[1]);
-
-        // Checks for invalidity on key
-        if(strpbrk($key, ' -"\''))
-        {
-            throw new \Exception("Key {$key} is not valid");
+        if (strpbrk($key, ' -"\'') || $key === '') {
+            throw new \Exception("Invalid key: $key");
         }
 
-        // Remove quotes from value if have any
-        if(substr($value, 0, 1) === '"')
-        {
-            if(substr($value, -1) !== '"')
-            {
-                throw new Exception("String not properly wrapped: {$value}");
-            }
-
+        // Remove surrounding quotes
+        if (str_starts_with($value, '"') && str_ends_with($value, '"')) {
             $value = substr($value, 1, -1);
-        }
-        // If does not contains quotes
-        // then we check for validity
-        else if(strpbrk($value, ' "\''))
-        {
-            throw new \Exception("Value {$value} is not valid");
+        } elseif (strpbrk($value, ' "\'')) {
+            throw new \Exception("Invalid value: $value");
         }
 
         $params[$key] = $value;
     }
 
-    foreach($params as $key => $value):
+    fclose($file);
 
-        putenv("{$key}={$value}");
+    foreach ($params as $key => $value) {
+        putenv("$key=$value");
+    }
 
-    endforeach;
-
-	return $params;
+    return $params;
 }
 
