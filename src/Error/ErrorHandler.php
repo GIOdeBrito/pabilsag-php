@@ -2,78 +2,76 @@
 
 namespace Pabilsag\Error;
 
-use Pabilsag\Services\Logger;
+use Pabilsag\Services\{ Logger, FileLogger };
 
 final class ErrorHandler
 {
-	private \Closure $onerrorcallback;
+	private \Closure $onErrorCallback;
+	private string $writeOutput = "";
 
 	public function __construct (
-		private Logger $logger
-	) {}
-
-	public function handleErrors (): void
-	{
-		// Do not allow errors to be written on the HTML document
-		error_reporting(E_ALL);
-		ini_set('display_errors', '0');
-		ini_set('log_errors', 1);
-
-		$this->setErrorHandlers();
-
-		$this->onerrorcallback = function (): void {
-
-			echo file_get_contents(constant('Pabilsag_SRC_ROOT_PATH').'/Template/InternalError.php');
+		private readonly Logger $logger,
+		private readonly FileLogger $fileLogger
+	) {
+		$this->onErrorCallback = function (): void {
+			echo file_get_contents(constant('Pabilsag_SRC_ROOT_PATH') . '/Template/InternalError.php');
 		};
 	}
 
-	public function onError (callable $func): void
+	public function onError(callable $func): void
 	{
-		$this->onerrorcallback = $func;
+		$this->onErrorCallback = \Closure::fromCallable($func);
 	}
 
-	private function setErrorHandlers (): void
+	public function outputErrorsToLogFile (bool $value): void
 	{
-		$foutput = fn($title, $message, $file, $line) => sprintf("%s -> %s | File: %s | Line: %s", $title, $message, $file, $line);;
+		$this->writeOutput = $value;
+	}
 
-		// Convert errors into exceptions
-		set_error_handler(function ($severity, $message, $file, $line) use ($foutput)
-		{
-			$this->logger->error($foutput("Pabilsag WARN", $message, $file, $line));
+	public function handleErrors(): void
+	{
+		error_reporting(E_ALL);
+		ini_set('display_errors', '0');
+		ini_set('log_errors', '1');
 
-			//throw new \ErrorException($message, 0, $severity, $file, $line);
+		$this->registerHandlers();
+	}
 
+	private function registerHandlers(): void
+	{
+		$log = function (string $type, string $msg, string $file, int|string $line): void {
+            $this->logger->error("Pabilsag $type -> $msg | File: $file | Line: $line");
+
+			// Write the error to the log file
+			if($this->writeOutput)
+			{
+				$this->fileLogger->log($type, sprintf("%s | Message: %s | File: %s | Line: %s", $type, $msg, $file, $line));
+			}
+        };
+
+		// Convert errors to log only (no throw)
+		set_error_handler(function (int $severity, string $message, string $file, int $line) use ($log): bool {
+			$log('WARN', $message, $file, $line);
+
+			// suppress default PHP error handling
 			return true;
 		});
 
-		register_shutdown_function(function () use ($foutput)
-		{
+		// Fatal errors + shutdown
+		register_shutdown_function(function () use ($log): void {
 			$error = error_get_last();
-
-			if(is_null($error))
-			{
+			if ($error === null) {
 				return;
 			}
 
-			$file = $error['file'];
-			$line = strval($error['line']);
-			$message = $error['message'];
-
-			$this->logger->error($foutput("Pabilsag FATAL ERROR", $message, $file, $line));
-
-			call_user_func_array($this->onerrorcallback, [ $message, $file, $line ]);
+			$log('FATAL ERROR', $error['message'], $error['file'], $error['line']);
+			($this->onErrorCallback)($error['message'], $error['file'], $error['line']);
 		});
 
-		// For uncaught exceptions
-		set_exception_handler(function (\Throwable $ex) use ($foutput)
-		{
-			$message = $ex->getMessage();
-			$file = $ex->getFile();
-			$line = strval($ex->getLine());
-
-			$this->logger->error($foutput("Pabilsag EXCEPTION", $message, $file, $line));
-
-			call_user_func_array($this->onerrorcallback, [ $message, $file, $line ]);
+		// Uncaught exceptions
+		set_exception_handler(function (\Throwable $ex) use ($log): void {
+			$log('EXCEPTION', $ex->getMessage(), $ex->getFile(), $ex->getLine());
+			($this->onErrorCallback)($ex->getMessage(), $ex->getFile(), $ex->getLine());
 		});
 	}
 }

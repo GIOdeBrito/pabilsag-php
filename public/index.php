@@ -11,9 +11,11 @@ use function Pabilsag\Helpers\Env\env_reader;
 
 $app = new App();
 
-$app->loader()->setViewDirectory(ABSPATH."/src/Views");
+$app->loader()->setViewDirectory(ABSPATH . "/src/Views");
+$app->loader()->setAppLogPath(ABSPATH . "/../log/demo-" . date('Y-m-d') . ".log");
 
 $app->error()->handleErrors();
+$app->error()->outputErrorsToLogFile(true);
 $app->error()->onError(function (string $message, string $file, int $line)
 {
 	echo <<<HTML

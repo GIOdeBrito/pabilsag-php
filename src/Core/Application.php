@@ -15,17 +15,24 @@ require Pabilsag_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/Json.php';
 require Pabilsag_SRC_ROOT_PATH.'/Helpers/Http.php';
 
-use Pabilsag\Http\{ Request, Response };
+use Pabilsag\Http\{
+	Request,
+	Response
+};
 use Pabilsag\Routing\Router;
 use Pabilsag\Services\{
 	Loader,
 	Logger,
+	FileLogger,
 	MiddlewarePipeline,
 	DIContainer,
 	AssetManager
 };
 use Pabilsag\Infrastructure\ConnectionFactory;
-use Pabilsag\Infrastructure\Serialization\{ JsonDeserializer, JsonSerializer };
+use Pabilsag\Infrastructure\Serialization\{
+	JsonDeserializer,
+	JsonSerializer
+};
 use Pabilsag\Web\CurlClient;
 use Pabilsag\Interfaces\MiddlewareInterface;
 use Pabilsag\Error\ErrorHandler;
@@ -43,9 +50,17 @@ class Application
 		$container = new DIContainer();
 		$this->container = $container;
 
-		$this->errHandler = new ErrorHandler($container->make(Logger::class));
+		$container->singleton(Loader::class, fn() => new Loader());
+
+		$this->errHandler = new ErrorHandler(
+			$container->make(Logger::class),
+			$container->make(FileLogger::class)
+		);
 
 		$container->bind(Logger::class, fn() => new Logger());
+		$container->bind(FileLogger::class, fn($container) => new FileLogger(
+			$container->make(Loader::class)
+		));
 		$container->bind(CurlClient::class, fn() => new CurlClient());
 
 		$container->bind(Request::class, fn() => new Request(
@@ -65,8 +80,6 @@ class Application
 		$container->bind(Database::class, fn($container) => new Database(
 			$container->make(ConnectionFactory::class)
 		));
-
-		$container->singleton(Loader::class, fn() => new Loader());
 
 		$container->singleton(AssetManager::class, fn($container) => new AssetManager(
 			$container->make(Logger::class)

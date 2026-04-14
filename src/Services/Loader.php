@@ -2,11 +2,11 @@
 
 namespace Pabilsag\Services;
 
-class Loader
+final class Loader
 {
 	private string $views = "";
 	private string $layout = "";
-	
+	private string $applogpath = "";
 	private array $connectionMetadata = [];
 
 	public function __construct ()
@@ -33,21 +33,30 @@ class Loader
 	{
 		return $this->layout;
 	}
-	
+
+	public function setAppLogPath (string $path): void
+	{
+		$this->applogpath = $path;
+	}
+
+	public function getAppLogPath (): string
+	{
+		return $this->applogpath;
+	}
+
 	public function importConnectionMetadata (string $path): void
 	{
 		if(!file_exists($path))
 		{
 			throw new \Exception("Connection metadata file at '{$path}' does not exist");
 		}
-		
+
 		$this->connectionMetadata = require $path;
 	}
-	
+
 	public function getConnectionMetadata (): array
 	{
 		return $this->connectionMetadata;
 	}
 }
 
-?>
