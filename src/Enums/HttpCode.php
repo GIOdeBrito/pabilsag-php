@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Pabilsag\Enums;
 
@@ -14,4 +14,3 @@ class HttpCode
 	public const InternalServerError = 500;
 }
 
-?>

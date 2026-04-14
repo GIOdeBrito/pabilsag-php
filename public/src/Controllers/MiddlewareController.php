@@ -16,7 +16,7 @@ class MiddlewareController
 	{
 		return $res->status(200)->render('Auth', '_layout');
 	}
-	
+
 	#[Route(
 		method: 'POST',
 		path: '/public/api/v1/auth',
@@ -29,4 +29,3 @@ class MiddlewareController
 	}
 }
 
-?>

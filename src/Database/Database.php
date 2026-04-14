@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Pabilsag\Database;
 
@@ -9,19 +9,19 @@ class Database implements DatabaseInterface
 {
 	private ConnectionFactory $factory;
 	private ?\PDO $pdo = NULL;
-	
+
 	public function __construct (ConnectionFactory $connectionFactory)
 	{
 		$this->factory = $connectionFactory;
 	}
-	
+
 	public function connect (string $connectionName): void
 	{
 		$pdo = $this->factory->get($connectionName);
-		
+
 		$this->pdo = $pdo;
 	}
-	
+
 	public function query (string $sql, array $params = [], bool $isObject = false): array|object
 	{
 		$res = $this->pdo->prepare($sql);
@@ -43,7 +43,7 @@ class Database implements DatabaseInterface
 		// Return data as associative array
 		return $res->fetchAll(\PDO::FETCH_ASSOC);
 	}
-	
+
 	public function execute (string $sql, array $params = []): bool
 	{
 		$res = $this->pdo->prepare($sql);
@@ -60,17 +60,17 @@ class Database implements DatabaseInterface
 
 		return $result;
 	}
-	
+
 	public function commit(): void
 	{
 		$this->pdo->commit();
 	}
-	
+
 	public function rollback(): void
 	{
 		$this->pdo->rollBack();
 	}
-	
+
 	private function setPDOBinds (\PDOStatement $statement, array $params): void
 	{
 		// Sequential bindings
@@ -97,4 +97,3 @@ class Database implements DatabaseInterface
 	}
 }
 
-?>

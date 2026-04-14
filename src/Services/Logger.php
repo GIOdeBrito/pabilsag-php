@@ -26,13 +26,12 @@ class Logger
 
 	public function warning (string $message): void
 	{
-		$this->log('WARNING', $message);
+		$this->log('WARN', $message);
 	}
 
 	public function error (string $message): void
 	{
-		$this->log('ERROR', $message);
+		$this->log('ERR', $message);
 	}
 }
 
-?>

@@ -1,5 +1,6 @@
 <?php
 
+use Pabilsag\Http\Response;
 use Pabilsag\Enums\ContentType;
 use Pabilsag\Attributes\Route;
 
@@ -10,7 +11,7 @@ class FileController
 		path: '/public/download',
 		description: 'File download test.'
 	)]
-	public function fileDownload ($req, $res): void
+	public function fileDownload ($req, $res): Response
 	{
 		$path = ABSPATH.'/assets/hipopotamo.jpg';
 
@@ -19,7 +20,7 @@ class FileController
 			$res->redirect('/public/404');
 		}
 
-		$res->status(200)->file($path, filename: 'Hipopotamo.jpg');
+		return $res->status(200)->file($path, filename: 'Hipopotamo.jpg');
 	}
 
 	#[Route(
@@ -27,7 +28,7 @@ class FileController
 		path: '/public/image',
 		description: 'Image display test.'
 	)]
-	public function fileDisplay ($req, $res): void
+	public function fileDisplay ($req, $res): Response
 	{
 		$path = ABSPATH.'/assets/hipopotamo.jpg';
 
@@ -36,7 +37,7 @@ class FileController
 			$res->redirect('/public/404');
 		}
 
-		$res->status(200)->file($path, ContentType::ImageJpg);
+		return $res->status(200)->file($path, ContentType::ImageJpg);
 	}
 
 	#[Route(
@@ -44,7 +45,7 @@ class FileController
 		path: '/public/image64',
 		description: 'Outputs image as base64.'
 	)]
-	public function fileBase64 ($req, $res): void
+	public function fileBase64 ($req, $res): Response
 	{
 		$path = ABSPATH.'/assets/hipopotamo.jpg';
 
@@ -55,8 +56,7 @@ class FileController
 
 		$content = base64_encode(file_get_contents($path));
 
-		$res->status(200)->plain($content);
+		return $res->status(200)->plain($content);
 	}
 }
 
-?>

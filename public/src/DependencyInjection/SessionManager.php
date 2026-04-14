@@ -7,7 +7,7 @@ class SessionManager
 	public function __construct (
 		private Logger $logger
 	) {
-		$logger->info("Session Manager was start'd! :D");
+		$logger->info("Session Manager was started! :D");
 		session_start();
 	}
 
@@ -28,4 +28,3 @@ class SessionManager
 	}
 }
 
-?>

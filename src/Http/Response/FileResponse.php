@@ -2,7 +2,7 @@
 
 namespace Pabilsag\Http\Response;
 
-use Pabilsag\Enums\{ResponseTypes, ContentType};
+use Pabilsag\Enums\ContentType;
 use Pabilsag\Interfaces\ResponseInterface;
 
 final class FileResponse implements ResponseInterface
@@ -14,17 +14,29 @@ final class FileResponse implements ResponseInterface
 		private ?string $filename = '',
 	) {}
 
-	public function getStatus(): int { return $this->status; }
-	public function getBody(): array|object { return ''; }
-	public function getText(): string { return ''; }
-	public function getHTML(): string { return ''; }
-	public function getFilePath(): string { return $this->filepath; }
-	public function getFilename(): string { return $this->filename; }
-	public function getView(): string { return ''; }
-	public function getViewData(): array|object { return []; }
-	public function getLayout(): string { return ''; }
-	public function getResponseType(): ResponseTypes { return ResponseTypes::FILE; }
-	public function getContentType(): string { return $this->contenttype; }
+	public function getStatus (): int
+	{
+		return $this->status;
+	}
+
+	public function setStatus (int $code): void
+	{
+		$this->status = $code;
+	}
+
+	public function getContentType (): string
+	{
+		return $this->contenttype;
+	}
+
+	public function send (): void
+	{
+		if(!empty($this->filename))
+		{
+			header("Content-Disposition: attachment; filename=\"{$this->filename}\"");
+		}
+
+		readfile($this->filepath);
+	}
 }
 
-?>

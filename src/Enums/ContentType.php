@@ -23,4 +23,3 @@ class ContentType
 	public const Zip = "application/zip";
 }
 
-?>

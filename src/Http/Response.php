@@ -2,9 +2,8 @@
 
 namespace Pabilsag\Http;
 
-use Pabilsag\Enums\{ ResponseTypes, ContentType };
+use Pabilsag\Enums\ContentType;
 use Pabilsag\Services\{ Loader, Logger, AssetManager };
-use Pabilsag\View\ViewRenderer;
 use Pabilsag\Interfaces\ResponseInterface;
 use Pabilsag\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
 
@@ -27,7 +26,15 @@ class Response
 
 	public function render (string $view, string $layout = '_layout', array $params = []): Response
 	{
-		$this->prepared = new RenderResponse(status: $this->code, view: $view, layout: $layout, viewData: $params);
+		$this->prepared = new RenderResponse(
+			status: $this->code,
+			view: $view,
+			layout: $layout,
+			viewData: $params,
+			viewDirectory: $this->loader->getViewDirectory(),
+			layoutDirectory: $this->loader->getLayoutDirectory(),
+			assetManager: $this->assetManager
+		);
 		return $this;
 	}
 
@@ -51,7 +58,12 @@ class Response
 
 	public function file (string $path, string $type = ContentType::FileStream, string $filename = ''): Response
 	{
-		$this->prepared = new FileResponse(status: $this->code, filepath: $path, contenttype: $type, filename: $filename);
+		$this->prepared = new FileResponse(
+			status: $this->code,
+			filepath: $path,
+			contenttype: $type,
+			filename: $filename
+		);
 		return $this;
 	}
 
@@ -73,105 +85,9 @@ class Response
 		$response = $this->prepared;
 
 		http_response_code(intval($response->getStatus()));
-		header('Content-Type: '.$response->getContentType());
+		header('Content-Type: ' . $response->getContentType());
 
-		// TODO: Refactor. Implement send function in each response type...
-
-		try
-		{
-			switch($response->getResponseType())
-			{
-				case ResponseTypes::VIEW:
-					$this->sendView($response->getView(), $response->getLayout(), $response->getViewData());
-					break;
-				case ResponseTypes::JSON:
-					$this->sendJson($response->getBody());
-					break;
-				case ResponseTypes::HTML:
-					$this->sendHtml($response->getHTML());
-					break;
-				case ResponseTypes::FILE:
-					$this->sendFile($response->getFilePath(), $response->getFilename());
-					break;
-				case ResponseTypes::PLAINTEXT:
-					$this->sendPlain($response->getText());
-					break;
-				default:
-					throw new \LogicException("Unknown response type '{$response->getResponseType()}'");
-			}
-		}
-		catch(\Exception $ex)
-		{
-			$this->logger?->error($ex?->getMessage());
-			http_response_code(500);
-			echo "Internal Server Error";
-		}
-	}
-
-	private function sendView (string $view, string $layout, array|object $params): void
-	{
-		$viewPath = $this->loader->getViewDirectory();
-
-		if(empty($viewPath))
-		{
-			throw new \Exception("Views path was not set.");
-		}
-
-		$viewrenderer = new ViewRenderer();
-		$viewFilePath = "{$viewPath}/{$view}.php";
-
-		if(!file_exists($viewFilePath))
-		{
-			throw new \Exception("Could not find view file.");
-		}
-
-		// Extract params as proper variables
-		extract($params);
-
-		// Capture view's content
-		$viewrenderer->beginCapture();
-
-		include $viewFilePath;
-
-		$viewrenderer->endCapture();
-
-		$body = $viewrenderer->getHtml();
-
-		// Extract the framework's parameters
-		extract([
-			'Pabilsag' => (object) [
-				'assets' => $this->assetManager
-			]
-		]);
-
-		// Load layout
-		include "{$this->loader?->getLayoutDirectory()}/{$layout}.php";
-	}
-
-	private function sendJson (array|object $body): void
-	{
-		// NOTE: No pretty print for JSON
-		echo json_encode($body ?? [], JSON_UNESCAPED_UNICODE);
-	}
-
-	private function sendHtml (string $html): void
-	{
-		echo $html ?? '';
-	}
-
-	private function sendFile (string $path, string $filename): void
-	{
-		if(!empty($filename ?? ''))
-		{
-			header("Content-Disposition: attachment; filename=\"{$filename}\"");
-		}
-
-		readfile($path);
-	}
-
-	private function sendPlain (string $text): void
-	{
-		echo $text ?? "";
+		$response->send();
 	}
 }
 

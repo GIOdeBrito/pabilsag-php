@@ -11,4 +11,3 @@ class HttpMethod
 	public const DELETE = "DELETE";
 }
 
-?>
