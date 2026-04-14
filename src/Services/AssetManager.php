@@ -35,17 +35,14 @@ final class AssetManager
 
 	public function renderStyleSheets (): void
 	{
-		foreach($this->stylesheets as $item):
-
+		foreach($this->stylesheets as $item) {
 			$path = $item['path'];
 			$version = $item['version'];
 
 			?>
-
 			<link rel="stylesheet" href="<?= $item['path'] ?>?v=<?= $version ?>">
-
-			<?
-		endforeach;
+			<?php
+		}
 	}
 
 	public function renderScripts (): void
@@ -62,7 +59,7 @@ final class AssetManager
 				src="<?= $path ?>?v=<?= $version ?>">
 			</script>
 
-			<?
+			<?php
 		endforeach;
 	}
 }
