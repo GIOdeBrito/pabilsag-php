@@ -2,34 +2,73 @@
 
 namespace Pabilsag\Infrastructure\Serialization;
 
-use Pabilsag\Services\Logger;
-
-// Basic implementation of a JSON deserializer
-
 class JsonDeserializer
 {
-	public function __construct (
-		public Logger $logger
-	) {}
-
-	public function fromJson (string $data, string $className): object
+	public static function deserialize(string $json, string $class): object
 	{
-        if(!class_exists($className))
-        {
-            throw new \Exception("Data Object: {$className} does not exist");
-        }
+		$data = json_decode($json, true);
 
-		try
+		if(json_last_error() !== JSON_ERROR_NONE)
 		{
-			return new $className( ...json_decode($data, true) );
+			throw new Exception('Invalid JSON: ' . json_last_error_msg());
 		}
-		// Throwable catches both errors and exceptions
-		catch(\Throwable $ex)
+
+		return self::hydrate($data, $class);
+	}
+
+	private static function hydrate(array $data, string $class): object
+	{
+		$reflection = new ReflectionClass($class);
+		$instance = $reflection->newInstanceWithoutConstructor();
+
+		foreach($data as $key => $value)
 		{
-			$this->logger->error($ex->getMessage());
-			throw new \Exception("An error ocurred during object deserialization");
+			$property = self::findProperty($reflection, $key);
+
+			if($property)
+			{
+				$property->setAccessible(true);
+				$property->setValue($instance, self::castValue($value, $property));
+			}
 		}
+
+		return $instance;
+	}
+
+	private static function findProperty(ReflectionClass $reflection, string $key): ?ReflectionProperty
+	{
+		if($reflection->hasProperty($key))
+		{
+			return $reflection->getProperty($key);
+		}
+
+		// snake_case to camelCase fallback
+		$camel = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $key))));
+
+		if($reflection->hasProperty($camel))
+		{
+			return $reflection->getProperty($camel);
+		}
+
+		return null;
+	}
+
+	private static function castValue($value, ReflectionProperty $property)
+	{
+		$type = $property->getType();
+
+		if(!$type)
+		{
+			return $value;
+		}
+
+		$typeName = $type->getName();
+
+		if($typeName === 'array' && is_array($value))
+		{
+			return $value;
+		}
+
+		return $value;
 	}
 }
-
-?>

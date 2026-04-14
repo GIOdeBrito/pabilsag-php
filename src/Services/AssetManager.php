@@ -58,7 +58,7 @@ final class AssetManager
 			?>
 
 			<script
-				type="<?= $item['isModule'] === true ? "module" : "text/javascript" ?>"
+				type="<?= $item['module'] === true ? "module" : "text/javascript" ?>"
 				src="<?= $path ?>?v=<?= $version ?>">
 			</script>
 

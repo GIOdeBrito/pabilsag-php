@@ -49,7 +49,7 @@ class Home
 	)]
 	public function db ($req, $res): Response
 	{
-		$db = $this->db;
+		$db = $this->database;
 
 		$db->connect('sqlite_db');
 		$queryResult = $db->query("SELECT * FROM USERS");
@@ -83,4 +83,3 @@ class Home
 	}
 }
 
-?>
