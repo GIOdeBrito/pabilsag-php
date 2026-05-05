@@ -8,5 +8,3 @@ return [
 		'options' => []
 	]
 ];
-
-?>

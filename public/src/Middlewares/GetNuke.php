@@ -29,5 +29,3 @@ class GETNuke implements MiddlewareInterface
 		return $next($req, $res);
 	}
 }
-
-?>

@@ -135,5 +135,3 @@ class DOMParser
 		return $this->domNodeInnerHtml($this->DOM);
 	}
 }
-
-?>

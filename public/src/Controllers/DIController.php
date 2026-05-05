@@ -40,5 +40,3 @@ class DIController
 		return $res->status(200)->json($content);
 	}
 }
-
-?>

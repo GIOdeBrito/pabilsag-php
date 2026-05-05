@@ -17,7 +17,5 @@ class Route
 
 		// DO NOT MANUALLY SET THESE ATTRIBUTES
 		public string $functionName = '',
-    ) {}
+	) {}
 }
-
-?>
