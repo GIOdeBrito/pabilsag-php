@@ -2,18 +2,16 @@
 
 namespace Pabilsag\Core;
 
-define("Pabilsag_SRC_ROOT_PATH", __DIR__.'/..');
-
 // Import helper files
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/String.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/Dir.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/Env.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/Object.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/DateTime.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/RouteAttributes.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/Polyfill.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/Json.php';
-require Pabilsag_SRC_ROOT_PATH.'/Helpers/Http.php';
+require __DIR__.'/../Helpers/String.php';
+require __DIR__.'/../Helpers/Dir.php';
+require __DIR__.'/../Helpers/Env.php';
+require __DIR__.'/../Helpers/Object.php';
+require __DIR__.'/../Helpers/DateTime.php';
+require __DIR__.'/../Helpers/RouteAttributes.php';
+require __DIR__.'/../Helpers/Polyfill.php';
+require __DIR__.'/../Helpers/Json.php';
+require __DIR__.'/../Helpers/Http.php';
 
 use Pabilsag\Http\{
 	Request,
@@ -52,15 +50,16 @@ class Application
 
 		$container->singleton(Loader::class, fn() => new Loader());
 
+		$container->bind(Logger::class, fn() => new Logger());
+		$container->bind(FileLogger::class, fn($container) => new FileLogger(
+			$container->make(Loader::class)
+		));
+
 		$this->errHandler = new ErrorHandler(
 			$container->make(Logger::class),
 			$container->make(FileLogger::class)
 		);
 
-		$container->bind(Logger::class, fn() => new Logger());
-		$container->bind(FileLogger::class, fn($container) => new FileLogger(
-			$container->make(Loader::class)
-		));
 		$container->bind(CurlClient::class, fn() => new CurlClient());
 
 		$container->bind(Request::class, fn() => new Request(
@@ -101,8 +100,6 @@ class Application
 		$container->singleton(Router::class, fn($container) => new Router($container));
 
 		$container->singleton(MiddlewarePipeline::class, fn($container) => new MiddlewarePipeline($container));
-
-		$container->singleton(Router::class, fn($container) => new Router($container));
 	}
 
 	public function router (): Router

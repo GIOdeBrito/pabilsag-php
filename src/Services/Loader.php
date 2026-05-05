@@ -11,7 +11,7 @@ final class Loader
 
 	public function __construct ()
 	{
-		$this->layout = constant("Pabilsag_SRC_ROOT_PATH")."/Template/";
+		$this->layout = __DIR__.'/../Template/';
 	}
 
 	public function setViewDirectory (string $path): void

@@ -33,7 +33,6 @@ spl_autoload_register(function (string $classname)
 		throw new Exception("Class '{$classname}' not found");
 	}
 
-	require $fullpath;
+	require_once $fullpath;
 });
 
-?>

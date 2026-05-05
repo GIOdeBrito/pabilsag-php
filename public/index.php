@@ -65,4 +65,3 @@ $app->container()->bind(SessionManager::class, fn($container) => new SessionMana
 
 $app->run();
 
-?>

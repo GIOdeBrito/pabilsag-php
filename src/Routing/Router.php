@@ -78,10 +78,11 @@ class Router
 		};
 
 		// Add route-specific middlewares to the pipeline
-		$this->container->make(MiddlewarePipeline::class)->addMultiple($route->middlewares);
+		$pipeline = clone $this->container->make(MiddlewarePipeline::class);
+		$pipeline->addMultiple($route->middlewares);
 
 		// Execute middleware pipeline before controller
-		$middlewareResponse = $this->container->make(MiddlewarePipeline::class)->handle($request, $response, $routeQueued);
+		$middlewareResponse = $pipeline->handle($request, $response, $routeQueued);
 
 		return $middlewareResponse;
 	}

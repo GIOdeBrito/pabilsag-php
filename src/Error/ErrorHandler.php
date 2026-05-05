@@ -7,14 +7,14 @@ use Pabilsag\Services\{ Logger, FileLogger };
 final class ErrorHandler
 {
 	private \Closure $onErrorCallback;
-	private string $writeOutput = "";
+	private bool $writeOutput = false;
 
 	public function __construct (
 		private readonly Logger $logger,
 		private readonly FileLogger $fileLogger
 	) {
 		$this->onErrorCallback = function (): void {
-			echo file_get_contents(constant('Pabilsag_SRC_ROOT_PATH') . '/Template/InternalError.php');
+			echo file_get_contents(__DIR__ . '/../Template/InternalError.php');
 		};
 	}
 
@@ -26,6 +26,11 @@ final class ErrorHandler
 	public function outputErrorsToLogFile (bool $value): void
 	{
 		$this->writeOutput = $value;
+	}
+
+	private function shouldWriteToFile (): bool
+	{
+		return $this->writeOutput;
 	}
 
 	public function handleErrors(): void
@@ -43,7 +48,7 @@ final class ErrorHandler
             $this->logger->error("Pabilsag $type -> $msg | File: $file | Line: $line");
 
 			// Write the error to the log file
-			if($this->writeOutput)
+			if($this->shouldWriteToFile())
 			{
 				$this->fileLogger->log($type, sprintf("%s | Message: %s | File: %s | Line: %s", $type, $msg, $file, $line));
 			}

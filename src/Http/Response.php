@@ -5,7 +5,7 @@ namespace Pabilsag\Http;
 use Pabilsag\Enums\ContentType;
 use Pabilsag\Services\{ Loader, Logger, AssetManager };
 use Pabilsag\Interfaces\ResponseInterface;
-use Pabilsag\Http\Response\{ FileResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
+use Pabilsag\Http\Response\{ FileResponse, GenericResponse, HtmlResponse, JsonResponse, PlainResponse, RenderResponse };
 
 class Response
 {
@@ -63,6 +63,16 @@ class Response
 			filepath: $path,
 			contenttype: $type,
 			filename: $filename
+		);
+		return $this;
+	}
+
+	public function generic (string $body, string $contentType): Response
+	{
+		$this->prepared = new GenericResponse(
+			status: $this->code,
+			body: $body,
+			contentType: $contentType
 		);
 		return $this;
 	}
